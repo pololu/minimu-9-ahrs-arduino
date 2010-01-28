@@ -1,71 +1,64 @@
+/* ******************************************************* */
+/* I2C code for ADXL345 accelerometer                      */
+/* and HMC5843 magnetometer                                */
+/* ******************************************************* */
 
-//  Functions to get accelerometer and magnetometer data via I2C
+int AccelAddress = 0x53;
 
-void Read_accel_magnetom(void)
+void I2C_Init()
 {
-accel_x = SENSOR_SIGN[3]*AN[3];
-accel_y = SENSOR_SIGN[4]*AN[4];
-accel_z = SENSOR_SIGN[5]*AN[5];
-magnetom_x = SENSOR_SIGN[6]*AN[6];
-magnetom_y = SENSOR_SIGN[7]*AN[7];
-magnetom_z = SENSOR_SIGN[8]*AN[8];
+  Wire.begin();
 }
 
-
-void Read_accel_raw(void)
-{  /*   Just psuedo-code
-	//0xA6 for a write
-	//0xA7 for a read
-	
-	uint8_t dummy, datah, datal;
-	
-	
-	//   This section to read x axis accelerometer	
-
-	//0x32 data registers
-	AN[3] = (float)(datal|(datah << 8));
-	
-	//  Now we read the y axis
-
-	//0x34 data registers
-	AN[4] = (float)(datal|(datah << 8));
-	
-	//   Now we read the z axis
-	
-	//0x36 data registers
-	AN[5] = (float)(datal|(datah << 8));	
-	*/
+void Accel_Init()
+{
+  Wire.beginTransmission(AccelAddress);
+  Wire.send(0x2D);  // power register
+  Wire.send(0x08);  // measurement mode
+  Wire.endTransmission();
+  delay(20);
+  Wire.beginTransmission(AccelAddress);
+  Wire.send(0x31);  // Data format register
+  Wire.send(0x08);  // set to full resolution
+  Wire.endTransmission();
+  delay(20);	
+  // Because our main loop runs at 50Hz we adjust the output data rate to 50Hz (25Hz bandwith)
+  //Wire.beginTransmission(AccelAddress);
+  //Wire.send(0x2C);  // Rate
+  //Wire.send(0x09);  // set to 50Hz, normal operation
+  //Wire.endTransmission();
 }
 
-void Read_magnetom_raw(void)
-{  /*   just psuedo-code
-	
-	//	The magnetometer values must be read consecutively
-	//	in order to move the magnetometer pointer. 
-	
-	
-	uint8_t datah, datal;
-	
-	Send (0x3C);    //write to HMC
-	Send (0x02);    //mode register
-	Send (0x00);    //continuous measurement mode
-	
-	//must read all six registers plus one to move the pointer back to 0x03
-	
-	Send(0x3D);          //read from HMC
-	
-	datah = Received Byte;	//x high byte
-	datal = Received Byte;	//x low byte
-	AN[6] = (float)(datal|(datah << 8));		// The value will have a range of -2048 to 2047
-	
-	datah = Received Byte;	//y high byte
-	datal = Received Byte;	//y low byte
-	AN[7] = (float)(datal|(datah << 8));		// The value will have a range of -2048 to 2047
-	
-	datah = Received Byte;	//z high byte
-	datal = Received Byte;	//z low byte
-	AN[7] = (float)(datal|(datah << 8));		// The value will have a range of -2048 to 2047
-	
-	Send (0x3D);         //must reach 0x09 to go back to 0x03
-	*/
+// Reads x,y and z accelerometer registers
+void Read_Accel()
+{
+  int i = 0;
+  byte buff[6];
+  
+  Wire.beginTransmission(AccelAddress); 
+  Wire.send(0x32);        //sends address to read from
+  Wire.endTransmission(); //end transmission
+  
+  Wire.beginTransmission(AccelAddress); //start transmission to device
+  Wire.requestFrom(AccelAddress, 6);    // request 6 bytes from device
+  
+  while(Wire.available())   // ((Wire.available())&&(i<6))
+  { 
+    buff[i] = Wire.receive();  // receive one byte
+    i++;
+  }
+  Wire.endTransmission(); //end transmission
+  
+  if (i==6)  // All bytes received?
+    {
+    AN[4] = (((int)buff[1]) << 8) | buff[0];    // Y axis
+    AN[3] = (((int)buff[3]) << 8) | buff[2];    // X axis
+    AN[5] = (((int)buff[5]) << 8) | buff[4];    // Z axis
+    accel_x = SENSOR_SIGN[3]*(AN[3]-AN_OFFSET[3]);
+    accel_y = SENSOR_SIGN[4]*(AN[4]-AN_OFFSET[4]);
+    accel_z = SENSOR_SIGN[5]*(AN[5]-AN_OFFSET[5]);
+    }
+  else
+    Serial.println("!ERR: Error reading accelerometer info!");
 }
+

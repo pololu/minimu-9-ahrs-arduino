@@ -1,11 +1,15 @@
-// 9 Degree of Measurement Attitude and Heading Refernce System
+
+// 9 Degree of Measurement Attitude and Heading Reference System
 // Firmware v1.0
 //
 // Released under Creative Commons License 
 // Code by Doug Weibel and Jose Julio
 // Based on ArduIMU v1.5 by Jordi Munoz and William Premerlani, Jose Julio and Doug Weibel
 
-// Axis definition: X axis pointing forward, Y axis pointing to the right and Z axis pointing down.
+// Axis definition: 
+   // X axis pointing forward (to the FTDI connector)
+   // Y axis pointing to the right 
+   // and Z axis pointing down.
 // Positive pitch : nose up
 // Positive roll : right wing down
 // Positive yaw : clockwise
@@ -14,19 +18,22 @@
 	
 	ATMega328@3.3V w/ external 8MHz resonator
 	High Fuse DA
-    Low Fuse FF
+        Low Fuse FF
 	
 	ADXL345: Accelerometer
 	HMC5843: Magnetometer
 	LY530:	Yaw Gyro
 	LPR530:	Pitch and Roll Gyro
+
+        Programmer : 3.3v FTDI
+        Arduino IDE : Select board  "Arduino Duemilanove w/ATmega328"
 */
 
-//  ***** Need to review datasheet and raw data.
-// ADC : Voltage reference 3.3v / 10bits(1024 steps) => 3.22mV/ADC step
-// ADXL335 Sensitivity(from datasheet) => 330mV/g, 3.22mV/ADC step => 330/3.22 = 102.48
-// Tested value : 101
-#define GRAVITY 101 //this equivalent to 1G in the raw data coming from the accelerometer 
+#include <Wire.h>
+
+// ADXL345 Sensitivity(from datasheet) => 4mg/LSB   1G => 1000mg/4mg = 256 steps
+// Tested value : 256
+#define GRAVITY 256  //this equivalent to 1G in the raw data coming from the accelerometer 
 #define Accel_Scale(x) x*(GRAVITY/9.81)//Scaling the raw data of the accel to actual acceleration in meters for seconds square
 
 #define ToRad(x) (x*0.01745329252)  // *pi/180
@@ -56,19 +63,18 @@
 
 #define PRINT_DCM 0     //Will print the whole direction cosine matrix
 #define PRINT_ANALOGS 0 //Will print the analog raw data
-#define PRINT_EULER 0   //Will print the Euler angles Roll, Pitch and Yaw
+#define PRINT_EULER 1   //Will print the Euler angles Roll, Pitch and Yaw
 //#define PRINT_GPS 0     //Will print GPS data
 //#define PRINT_BINARY 0  //Will print binary message and suppress ASCII messages (above)
 
 #define ADC_WARM_CYCLES 75
-#define STATUS_LED 5
+#define STATUS_LED 13  //5?
 
 #define FALSE 0
 #define TRUE 1
 
-
-uint8_t sensors[3] = {6,7,3};  // Map the ADC channels to x, y, z
-int SENSOR_SIGN[9] = {1,-1,-1,1,-1,1,1,1,1};  //Correct directions x,y,z - gyros, accels, magnetormeter
+int8_t sensors[3] = {1,2,0};  // Map the ADC channels gyro_x, gyro_y, gyro_z
+int SENSOR_SIGN[9] = {-1,1,-1,1,1,1,1,1,1};  //Correct directions x,y,z - gyros, accels, magnetormeter
 
 float G_Dt=0.02;    // Integration time (DCM algorithm)  We will run the integration loop at 50Hz if possible
 
@@ -132,15 +138,15 @@ volatile uint8_t analog_count[8];
 
 void setup()
 { 
-
-
   Serial.begin(38400);
-  
   pinMode (STATUS_LED,OUTPUT);  // Status LED
   
-  Analog_Reference(EXTERNAL);//Using external analog reference
+  Analog_Reference(DEFAULT); 
   Analog_Init();
-  Serial.println("9 Degree of Measurement Attitude and Heading Refernce System");
+  Serial.println();
+  Serial.println("Sparkfun 9DOF Razor IMU");
+  Serial.println("9 Degree of Measurement Attitude and Heading Reference System");
+  Serial.println("Initialization...");
   
   for(int c=0; c<ADC_WARM_CYCLES; c++)
   { 
@@ -152,28 +158,36 @@ void setup()
   }
   digitalWrite(STATUS_LED,LOW);
   
-  Read_accel_raw();
-  //Read_magnetom_raw();
-  for(int y=0; y<=5; y++)   // Use last initial ADC values for initial offset.
+  // Acceleromter initialization
+  I2C_Init();
+  delay(20);
+  Accel_Init();
+  delay(60);
+  Read_Accel();
+  
+  Read_adc_raw();
+  delay(20);
+  Read_adc_raw();
+
+  for(int y=0; y<6; y++)   // Use last initial ADC values for initial offset.
     AN_OFFSET[y]=AN[y];
   delay(20);
   for(int i=0;i<400;i++)    // We take some readings...
     {
     Read_adc_raw();
-	Read_accel_raw();
-	//Read_magnetom_raw();
-    for(int y=0; y<=5; y++)   // Read ADC values for offset (averaging).
+    Read_Accel();
+    for(int y=0; y<6; y++)   // Read ADC values for offset (averaging).
       AN_OFFSET[y]=AN_OFFSET[y]*0.9 + AN[y]*0.1;
     delay(20);
     }
   AN_OFFSET[5]-=GRAVITY*SENSOR_SIGN[5];
   
-  // ******  Need to do something here to handle initial condition of magnetometer??
-  
-  for(int y=0; y<=8; y++)
+  // ******  Need to do something here to handle initial condition of magnetometer??  
+  Serial.println("Offset values:");
+  for(int y=0; y<9; y++)
     Serial.println(AN_OFFSET[y]);
   
-  delay(250);
+  delay(2500);
   digitalWrite(STATUS_LED,HIGH);
     
   Read_adc_raw();     // ADC initialization
@@ -181,36 +195,25 @@ void setup()
   delay(20);
 }
 
-
-
 void loop() //Main Loop
 {
- 
-  if((millis()-timer)>=20)  // Main loop runs at 50Hz
+  if((DIYmillis()-timer)>=20)  // Main loop runs at 50Hz
   {
     timer_old = timer;
-    timer=millis();
+    timer=DIYmillis();
     G_Dt = (timer-timer_old)/1000.0;    // Real time of loop run. We use this on the DCM algorithm (gyro integration time)
     if(G_Dt > 1)
-      {
         G_Dt = 0;  //keeps dt from blowing up, goes to zero to keep gyros from departing
-      }
     
     // *** DCM algorithm
-    Read_adc_raw();
-	Read_accel_raw();
-	Read_magnetom_raw();
-	Read_accel_magnetom();
+    Read_adc_raw();   // This read gyro data
+    Read_Accel();     // Read I2C accelerometer
     Matrix_update(); 
     Normalize();
     Drift_correction();
     Euler_angles();
-    /*
-	#if PRINT_BINARY
-      printdata(); //Send info via serial
-    #endif
-	*/
-
+   
+    printdata();
     
     //Turn off the LED when you saturate any of the gyros.
     if((abs(Gyro_Vector[0])>=ToRad(300))||(abs(Gyro_Vector[1])>=ToRad(300))||(abs(Gyro_Vector[2])>=ToRad(300)))
@@ -218,30 +221,11 @@ void loop() //Main Loop
       gyro_sat=1;
       digitalWrite(STATUS_LED,LOW);  
     }
-  }
-  
-  if((millis()-timer24)>=100)
-  {
-    if(gyro_sat>=1)
-    {
-      digitalWrite(STATUS_LED,LOW);
-      if(gyro_sat>=8)
-        gyro_sat=0;
-      else
-        gyro_sat++;
-    }
     else
     {
-      digitalWrite(STATUS_LED,HIGH);
-    }
-    timer24=millis();
-    
-	//decode_gps();
-    //#if !PRINT_BINARY
-	
-      printdata(); //Send info via serial
-	  
-    //#endif
+      gyro_sat=0;
+      digitalWrite(STATUS_LED,HIGH);  
+    } 
   }
-  
+   
 }

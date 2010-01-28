@@ -1,28 +1,38 @@
 
-void printdata(void)//ToDeg(x)
+void printdata(void)
 {    
-      Serial.print("!!!");
-      
+      Serial.print("!");
+
+      #if PRINT_EULER == 1
+      Serial.print("ANG:");
+      Serial.print(ToDeg(roll));
+      Serial.print(",");
+      Serial.print(ToDeg(pitch));
+      Serial.print(",");
+      Serial.print(ToDeg(yaw));
+      Serial.print (",");
+      #endif      
       #if PRINT_ANALOGS==1
-      Serial.print("AN0:");
+      Serial.print("AN:");
       Serial.print(read_adc(0));
-      Serial.print(",AN1:");
+      Serial.print(",");
       Serial.print(read_adc(1));
-      Serial.print(",AN2:");
+      Serial.print(",");
       Serial.print(read_adc(2));  
-      Serial.print(",AN3:");
+      Serial.print(",");
       Serial.print(accel_x);
-      Serial.print (",AN4:");
+      Serial.print (",");
       Serial.print(accel_y);
-      Serial.print (",AN5:");
+      Serial.print (",");
       Serial.print(accel_z);
+      /*
       Serial.print(",AN6:");
       Serial.print(magnetom_x);
       Serial.print (",AN7:");
       Serial.print(magnetom_y);
       Serial.print (",AN8:");
       Serial.print(magnetom_z);
-      Serial.print (",");
+      Serial.print (",");*/
       #endif
       #if PRINT_DCM == 1
       Serial.print ("EX0:");
@@ -45,20 +55,9 @@ void printdata(void)//ToDeg(x)
       Serial.print(convert_to_dec(DCM_Matrix[2][2]));
       Serial.print (",");
       #endif
-      #if PRINT_EULER == 1
-      Serial.print("RLL:");
-      Serial.print(ToDeg(roll));
-      Serial.print(",PCH:");
-      Serial.print(ToDeg(pitch));
-      Serial.print(",YAW:");
-      Serial.print(ToDeg(yaw));
-      Serial.print (",");
-      #endif
       
-      Serial.println("***");    
-
+      Serial.println();    
 }
-
 
 long convert_to_dec(float x)
 {

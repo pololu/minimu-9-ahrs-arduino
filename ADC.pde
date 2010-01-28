@@ -7,7 +7,7 @@ void Read_adc_raw(void)
   uint8_t temp2;    
   
   // ADC readings...
-  for (i=0;i<6;i++)
+  for (i=0;i<3;i++)
     {
       do{
         temp1= analog_buffer[sensors[i]];             // sensors[] maps sensors to correct order 
@@ -18,7 +18,7 @@ void Read_adc_raw(void)
             
     }
   // Initialization for the next readings...
-  for (int i=0;i<8;i++){
+  for (int i=0;i<3;i++){
     do{
       analog_buffer[i]=0;
       analog_count[i]=0;
@@ -72,7 +72,7 @@ ISR(ADC_vect)
         analog_count[MuxSel]++;
   }
   MuxSel++;
-  MuxSel &= 0x07;   //if(MuxSel >=8) MuxSel=0;
+  MuxSel &= 0x03;   //if(MuxSel >=4) MuxSel=0;
   ADMUX = (analog_reference << 6) | MuxSel;
   // start the conversion
   ADCSRA|= (1<<ADSC);

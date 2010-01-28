@@ -102,6 +102,7 @@ void Drift_correction(void)
   //  This is OK as long as our PI gains are not too high
   //  This is my new section which I need to really test/look at (DW)
   
+  /*
 	Accel_magnitude = Accel_magnitude * GRAVITY;   // return to the actual magnitude of the Accel vector
 	mag_projection = Vector_Dot_Product(Accel_Vector,Mag_Vector) / Accel_magnitude;
 	for(int i=0; i<=2;i++){
@@ -113,7 +114,7 @@ void Drift_correction(void)
   
 	Vector_Scale(&Scaled_Omega_I[0],&errorYaw[0],Ki_YAW);
 	Vector_Add(Omega_I,Omega_I,Scaled_Omega_I);     
-  
+  */
   
   //  Here we will place a limit on the integrator so that the integrator cannot ever exceed half the saturation limit of the gyros
   Integrator_magnitude = sqrt(Vector_Dot_Product(Omega_I,Omega_I));
@@ -122,9 +123,7 @@ void Drift_correction(void)
     Serial.print("Integrator being contrained from ");
     Serial.print(ToDeg(Integrator_magnitude));
     Serial.println(" degrees");
-  }
-  
-  
+  }    
 }
 /**************************************************/
 /*
@@ -146,11 +145,9 @@ void Matrix_update(void)
   Accel_Vector[1]=accel_y;
   Accel_Vector[2]=accel_z;
   
-  Mag_Vector[0]=magnetom_x;  //This is the magnetometer direction vector as measured
-  Mag_Vector[1]=magnetom_y;
-  Mag_Vector[2]=magnetom_z;
-  
-  
+  //Mag_Vector[0]=magnetom_x;  //This is the magnetometer direction vector as measured
+  //Mag_Vector[1]=magnetom_y;
+  //Mag_Vector[2]=magnetom_z;
   
   Vector_Add(&Omega[0], &Gyro_Vector[0], &Omega_I[0]);  //adding proportional term
   Vector_Add(&Omega_Vector[0], &Omega[0], &Omega_P[0]); //adding Integrator term
