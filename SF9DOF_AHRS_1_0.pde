@@ -51,24 +51,22 @@
 
 #define Kp_ROLLPITCH 0.0125
 #define Ki_ROLLPITCH 0.000008
-#define Kp_YAW 0.01
+#define Kp_YAW 1.2
 #define Ki_YAW 0.000008
 
-/*Min Speed Filter for Yaw drift Correction
-#define SPEEDFILT 2 // >1 use min speed filter for yaw drift cancellation, 0=do not use speed filter
-*/
-
 /*For debugging purposes*/
-//OUTPUTMODE=1 will print the corrected data, 0 will print uncorrected data of the gyros (with drift), 2 will print accelerometer only data
+//OUTPUTMODE=1 will print the corrected data, 
+//OUTPUTMODE=0 will print uncorrected data of the gyros (with drift)
+//OUTPUTMODE=2 will print accelerometer only data and magnetometer data
 #define OUTPUTMODE 1
 
 #define PRINT_DCM 0     //Will print the whole direction cosine matrix
-#define PRINT_ANALOGS 1 //Will print the analog raw data
-#define PRINT_EULER 0   //Will print the Euler angles Roll, Pitch and Yaw
+#define PRINT_ANALOGS 0 //Will print the analog raw data
+#define PRINT_EULER 1   //Will print the Euler angles Roll, Pitch and Yaw
 //#define PRINT_GPS 0     //Will print GPS data
 //#define PRINT_BINARY 0  //Will print binary message and suppress ASCII messages (above)
 
-#define ADC_WARM_CYCLES 25
+#define ADC_WARM_CYCLES 50
 #define STATUS_LED 13  //5?
 
 #define FALSE 0
@@ -140,15 +138,15 @@ volatile uint8_t analog_count[8];
 
 void setup()
 { 
-  Serial.begin(38400);
+  Serial.begin(57600);
   pinMode (STATUS_LED,OUTPUT);  // Status LED
   
   Analog_Reference(DEFAULT); 
   Analog_Init();
   Serial.println();
-  Serial.println("Sparkfun 9DOF Razor IMU v1.04");
+  Serial.println("Sparkfun 9DOF Razor IMU v1.06");
   Serial.println("9 Degree of Measurement Attitude and Heading Reference System");
-  Serial.println("Initialization...");
+  Serial.println("Initialization...(IMU flat and still)");
   
   for(int c=0; c<ADC_WARM_CYCLES; c++)
   { 
@@ -169,20 +167,8 @@ void setup()
   
   // Magnetometer initialization
   Compass_Init();
-  /*
-  for (int m=0;m<1000;m++)
-  {
-  delay(100);
-  Read_Compass();
-  Serial.print("Magnetometers: ");
-  Serial.print((int)magnetom_x);
-  Serial.print(",");
-  Serial.print((int)magnetom_y);
-  Serial.print(",");
-  Serial.println((int)magnetom_z);  
-  }
-  */
   
+  // Initialze ADC readings and buffers
   Read_adc_raw();
   delay(20);
   Read_adc_raw();
@@ -205,7 +191,7 @@ void setup()
   for(int y=0; y<6; y++)
     Serial.println(AN_OFFSET[y]);
   
-  delay(2500);
+  delay(2000);
   digitalWrite(STATUS_LED,HIGH);
     
   Read_adc_raw();     // ADC initialization

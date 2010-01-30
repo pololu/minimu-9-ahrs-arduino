@@ -101,7 +101,6 @@ void Drift_correction(void)
   //*****YAW***************
   // We make the gyro YAW drift correction based on compass magnetic heading
  
-  /*
   mag_heading_x = cos(MAG_Heading);
   mag_heading_y = sin(MAG_Heading);
   errorCourse=(DCM_Matrix[0][0]*mag_heading_y) - (DCM_Matrix[1][0]*mag_heading_x);  //Calculating YAW error
@@ -112,7 +111,6 @@ void Drift_correction(void)
   
   Vector_Scale(&Scaled_Omega_I[0],&errorYaw[0],Ki_YAW);//.00001Integrator
   Vector_Add(Omega_I,Omega_I,Scaled_Omega_I);//adding integrator to the Omega_I
-  */
   
   //  Here we will place a limit on the integrator so that the integrator cannot ever exceed half the saturation limit of the gyros
   Integrator_magnitude = sqrt(Vector_Dot_Product(Omega_I,Omega_I));

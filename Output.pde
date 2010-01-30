@@ -15,7 +15,7 @@ void printdata(void)
       #endif      
       #if PRINT_ANALOGS==1
       Serial.print(",AN:");
-      /*Serial.print(read_adc(0));
+      Serial.print(read_adc(0));
       Serial.print(",");
       Serial.print(read_adc(1));
       Serial.print(",");
@@ -26,7 +26,7 @@ void printdata(void)
       Serial.print(accel_y);
       Serial.print (",");
       Serial.print(accel_z);
-      Serial.print(",");*/
+      Serial.print(",");
       Serial.print((int)magnetom_x);
       Serial.print (",");
       Serial.print((int)magnetom_y);
