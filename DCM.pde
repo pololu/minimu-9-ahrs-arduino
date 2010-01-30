@@ -72,6 +72,9 @@ void Normalize(void)
 /**************************************************/
 void Drift_correction(void)
 {
+  float mag_heading_x;
+  float mag_heading_y;
+  float errorCourse;
   //Compensation the Roll, Pitch and Yaw drift. 
   static float Scaled_Omega_P[3];
   static float Scaled_Omega_I[3];
@@ -96,24 +99,19 @@ void Drift_correction(void)
   Vector_Add(Omega_I,Omega_I,Scaled_Omega_I);     
   
   //*****YAW***************
-  
-  //  We correct yaw using magnetometer vector
-  //  This will "double correct" (one of) the other axis depending on orientation
-  //  This is OK as long as our PI gains are not too high
-  //  This is my new section which I need to really test/look at (DW)
-  
+  // We make the gyro YAW drift correction based on compass magnetic heading
+ 
   /*
-	Accel_magnitude = Accel_magnitude * GRAVITY;   // return to the actual magnitude of the Accel vector
-	mag_projection = Vector_Dot_Product(Accel_Vector,Mag_Vector) / Accel_magnitude;
-	for(int i=0; i<=2;i++){
-	  Mag_Vector[i] -= Accel_Vector[i]*mag_projection;   // Here we remove the projection of the Mag vector in the direction of the Accel (gravity) vector
-	}
-	
-	Vector_Cross_Product(&errorYaw[0],&Mag_Vector[0],&DCM_Matrix[0][0]); //
-	Vector_Scale(&Omega_P[0],&errorYaw[0],Kp_YAW);
+  mag_heading_x = cos(MAG_Heading);
+  mag_heading_y = sin(MAG_Heading);
+  errorCourse=(DCM_Matrix[0][0]*mag_heading_y) - (DCM_Matrix[1][0]*mag_heading_x);  //Calculating YAW error
+  Vector_Scale(errorYaw,&DCM_Matrix[2][0],errorCourse); //Applys the yaw correction to the XYZ rotation of the aircraft, depeding the position.
   
-	Vector_Scale(&Scaled_Omega_I[0],&errorYaw[0],Ki_YAW);
-	Vector_Add(Omega_I,Omega_I,Scaled_Omega_I);     
+  Vector_Scale(&Scaled_Omega_P[0],&errorYaw[0],Kp_YAW);//.01proportional of YAW.
+  Vector_Add(Omega_P,Omega_P,Scaled_Omega_P);//Adding  Proportional.
+  
+  Vector_Scale(&Scaled_Omega_I[0],&errorYaw[0],Ki_YAW);//.00001Integrator
+  Vector_Add(Omega_I,Omega_I,Scaled_Omega_I);//adding integrator to the Omega_I
   */
   
   //  Here we will place a limit on the integrator so that the integrator cannot ever exceed half the saturation limit of the gyros
@@ -192,7 +190,7 @@ void Euler_angles(void)
   #if (OUTPUTMODE==2)         // Only accelerometer info (debugging purposes)
     roll = atan2(Accel_Vector[1],Accel_Vector[2]);    // atan2(acc_y,acc_z)
     pitch = -asin((Accel_Vector[0])/(double)GRAVITY); // asin(acc_x)
-    yaw = 0;
+    yaw = MAG_Heading;                     // Magnetic heading
   #else
     pitch = -asin(DCM_Matrix[2][0]);
     roll = atan2(DCM_Matrix[2][1],DCM_Matrix[2][2]);
