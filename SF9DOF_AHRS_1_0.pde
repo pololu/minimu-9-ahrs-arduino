@@ -143,6 +143,11 @@ void setup()
   
   Analog_Reference(DEFAULT); 
   Analog_Init();
+  I2C_Init();
+  Accel_Init();
+  Read_Accel();
+  //delay(5);
+  //Accel_Init();
   Serial.println();
   Serial.println("Sparkfun 9DOF Razor IMU v1.06");
   Serial.println("9 Degree of Measurement Attitude and Heading Reference System");
@@ -157,14 +162,7 @@ void setup()
     delay(50);
   }
   digitalWrite(STATUS_LED,LOW);
-  
-  // Acceleromter initialization
-  I2C_Init();
-  delay(20);
-  Accel_Init();
-  delay(60);
-  Read_Accel();
-  
+   
   // Magnetometer initialization
   Compass_Init();
   
@@ -172,10 +170,14 @@ void setup()
   Read_adc_raw();
   delay(20);
   Read_adc_raw();
+  Read_Accel();
 
   for(int y=0; y<6; y++)   // Use last initial ADC values for initial offset.
     AN_OFFSET[y]=AN[y];
   delay(20);
+  if ((AN[3]==0)&&(AN[4]==0)&&(AN[5]==0))
+    Serial.println("Error initializing accelerometer");
+    
   for(int i=0;i<400;i++)    // We take some readings...
     {
     Read_adc_raw();
@@ -186,7 +188,6 @@ void setup()
     }
   AN_OFFSET[5]-=GRAVITY*SENSOR_SIGN[5];
   
-  // ******  Need to do something here to handle initial condition of magnetometer??  
   Serial.println("Offset values:");
   for(int y=0; y<6; y++)
     Serial.println(AN_OFFSET[y]);
