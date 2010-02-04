@@ -53,15 +53,18 @@ void Read_Accel()
   
   if (i==6)  // All bytes received?
     {
-    AN[4] = (((int)buff[1]) << 8) | buff[0];    // Y axis (internal sensor x axis)
-    AN[3] = (((int)buff[3]) << 8) | buff[2];    // X axis (internal sensor y axis)
-    AN[5] = (((int)buff[5]) << 8) | buff[4];    // Z axis
-    accel_x = SENSOR_SIGN[3]*(AN[3]-AN_OFFSET[3]);
-    accel_y = SENSOR_SIGN[4]*(AN[4]-AN_OFFSET[4]);
-    accel_z = SENSOR_SIGN[5]*(AN[5]-AN_OFFSET[5]);
+    ACC[1] = (((int)buff[1]) << 8) | buff[0];    // Y axis (internal sensor x axis)
+    ACC[0] = (((int)buff[3]) << 8) | buff[2];    // X axis (internal sensor y axis)
+    ACC[2] = (((int)buff[5]) << 8) | buff[4];    // Z axis
+    AN[3] = ACC[0];
+    AN[4] = ACC[1];
+    AN[5] = ACC[2];
+    accel_x = SENSOR_SIGN[3]*(ACC[0]-AN_OFFSET[3]);
+    accel_y = SENSOR_SIGN[4]*(ACC[1]-AN_OFFSET[4]);
+    accel_z = SENSOR_SIGN[5]*(ACC[2]-AN_OFFSET[5]);
     }
   else
-    Serial.println("!ERR: Error reading accelerometer info!");
+    Serial.println("!ERR: Acc data");
 }
 
 void Compass_Init()
@@ -98,6 +101,6 @@ void Read_Compass()
     magnetom_z = SENSOR_SIGN[8]*((((int)buff[4]) << 8) | buff[5]);    // Z axis
     }
   else
-    Serial.println("!ERR: Error reading magnetometer info!");
+    Serial.println("!ERR: Mag data");
 }
 

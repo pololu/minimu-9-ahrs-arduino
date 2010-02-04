@@ -1,5 +1,5 @@
 // We are using an oversampling and averaging method to increase the ADC resolution
-// The theorical ADC resolution is now 11.7 bits. Now we store the ADC readings in float format
+// Now we store the ADC readings in float format
 void Read_adc_raw(void)
 {
   int i;
@@ -14,7 +14,7 @@ void Read_adc_raw(void)
         temp2= analog_count[sensors[i]];
         } while(temp1 != analog_buffer[sensors[i]]);  // Check if there was an ADC interrupt during readings...
       
-      if (temp2>0) AN[i] = float(temp1)/float(temp2);     // Check for divide by zero 
+      if (temp2>0) AN[i] = (float)temp1/(float)temp2;     // Check for divide by zero 
             
     }
   // Initialization for the next readings...
@@ -28,22 +28,10 @@ void Read_adc_raw(void)
 
 float read_adc(int select)
 {
-  float temp;
-  if (SENSOR_SIGN[select]<0){
-    temp = (AN_OFFSET[select]-AN[select]);
-    if (abs(temp)>900) {
-      Serial.print("ADC being constrained from ");
-      Serial.println(temp);
-    }
-    return constrain(temp,-900,900);             //Throw out nonsensical values
-  } else {
-    temp = (AN[select]-AN_OFFSET[select]); 
-    if (abs(temp)>900) {
-      Serial.print("ADC being constrained from ");
-      Serial.println(temp);
-    } 
-    return constrain(temp,-900,900);
-  }
+  if (SENSOR_SIGN[select]<0)
+    return(AN_OFFSET[select]-AN[select]);
+  else
+    return(AN[select]-AN_OFFSET[select]); 
 }
 
 //Activating the ADC interrupts. 

@@ -4,7 +4,6 @@ void Normalize(void)
   float error=0;
   float temporary[3][3];
   float renorm=0;
-  boolean problem=FALSE;
   
   error= -Vector_Dot_Product(&DCM_Matrix[0][0],&DCM_Matrix[1][0])*.5; //eq.19
 
@@ -16,57 +15,14 @@ void Normalize(void)
   
   Vector_Cross_Product(&temporary[2][0],&temporary[0][0],&temporary[1][0]); // c= a x b //eq.20
   
-  renorm= Vector_Dot_Product(&temporary[0][0],&temporary[0][0]); 
-  if (renorm < 1.5625f && renorm > 0.64f) {
-    renorm= .5 * (3-renorm);                                                 //eq.21
-  } else if (renorm < 100.0f && renorm > 0.01f) {
-    renorm= 1. / sqrt(renorm);  
-    Serial.print("Square root called in renormalization");  
-  } else {
-    problem = TRUE;
-    Serial.print("Problem detected!   Renorm 1 = ");
-    Serial.println(renorm);
-  }
-      Vector_Scale(&DCM_Matrix[0][0], &temporary[0][0], renorm);
+  renorm= .5 *(3 - Vector_Dot_Product(&temporary[0][0],&temporary[0][0])); //eq.21
+  Vector_Scale(&DCM_Matrix[0][0], &temporary[0][0], renorm);
   
-  renorm= Vector_Dot_Product(&temporary[1][0],&temporary[1][0]); 
-  if (renorm < 1.5625f && renorm > 0.64f) {
-    renorm= .5 * (3-renorm);                                                 //eq.21
-  } else if (renorm < 100.0f && renorm > 0.01f) {
-    renorm= 1. / sqrt(renorm);    
-    Serial.print("Square root called in renormalization");
-  } else {
-    problem = TRUE;
-    Serial.print("Problem detected!   Renorm 2 = ");
-    Serial.println(renorm);
-  }
+  renorm= .5 *(3 - Vector_Dot_Product(&temporary[1][0],&temporary[1][0])); //eq.21
   Vector_Scale(&DCM_Matrix[1][0], &temporary[1][0], renorm);
   
-  renorm= Vector_Dot_Product(&temporary[2][0],&temporary[2][0]); 
-  if (renorm < 1.5625f && renorm > 0.64f) {
-    renorm= .5 * (3-renorm);                                                 //eq.21
-  } else if (renorm < 100.0f && renorm > 0.01f) {
-    renorm= 1. / sqrt(renorm);  
-    Serial.print("Square root called in renormalization");  
-  } else {
-    problem = TRUE;
-    Serial.print("Problem detected!   Renorm 3 = ");
-    Serial.println(renorm);
-  }
+  renorm= .5 *(3 - Vector_Dot_Product(&temporary[2][0],&temporary[2][0])); //eq.21
   Vector_Scale(&DCM_Matrix[2][0], &temporary[2][0], renorm);
-  
-  if (problem) {                // Our solution is blowing up and we will force back to initial condition.  Hope we are not upside down!
-      DCM_Matrix[0][0]= 1.0f;
-      DCM_Matrix[0][1]= 0.0f;
-      DCM_Matrix[0][2]= 0.0f;
-      DCM_Matrix[1][0]= 0.0f;
-      DCM_Matrix[1][1]= 1.0f;
-      DCM_Matrix[1][2]= 0.0f;
-      DCM_Matrix[2][0]= 0.0f;
-      DCM_Matrix[2][1]= 0.0f;
-      DCM_Matrix[2][2]= 1.0f;
-      problem = FALSE;  
-  }
 }
 
 /**************************************************/
@@ -80,8 +36,7 @@ void Drift_correction(void)
   static float Scaled_Omega_I[3];
   float Accel_magnitude;
   float Accel_weight;
-  float Integrator_magnitude;
-  float mag_projection;
+  
   
   //*****Roll and Pitch***************
 
@@ -111,15 +66,6 @@ void Drift_correction(void)
   
   Vector_Scale(&Scaled_Omega_I[0],&errorYaw[0],Ki_YAW);//.00001Integrator
   Vector_Add(Omega_I,Omega_I,Scaled_Omega_I);//adding integrator to the Omega_I
-  
-  //  Here we will place a limit on the integrator so that the integrator cannot ever exceed half the saturation limit of the gyros
-  Integrator_magnitude = sqrt(Vector_Dot_Product(Omega_I,Omega_I));
-  if (Integrator_magnitude > ToRad(300)) {
-    Vector_Scale(Omega_I,Omega_I,0.5f*ToRad(300)/Integrator_magnitude);
-    Serial.print("Integrator being contrained from ");
-    Serial.print(ToDeg(Integrator_magnitude));
-    Serial.println(" degrees");
-  }    
 }
 /**************************************************/
 /*
@@ -140,11 +86,7 @@ void Matrix_update(void)
   Accel_Vector[0]=accel_x;
   Accel_Vector[1]=accel_y;
   Accel_Vector[2]=accel_z;
-  
-  //Mag_Vector[0]=magnetom_x;  //This is the magnetometer direction vector as measured
-  //Mag_Vector[1]=magnetom_y;
-  //Mag_Vector[2]=magnetom_z;
-  
+    
   Vector_Add(&Omega[0], &Gyro_Vector[0], &Omega_I[0]);  //adding proportional term
   Vector_Add(&Omega_Vector[0], &Omega[0], &Omega_P[0]); //adding Integrator term
 
@@ -185,14 +127,8 @@ void Matrix_update(void)
 
 void Euler_angles(void)
 {
-  #if (OUTPUTMODE==2)         // Only accelerometer info (debugging purposes)
-    roll = atan2(Accel_Vector[1],Accel_Vector[2]);    // atan2(acc_y,acc_z)
-    pitch = -asin((Accel_Vector[0])/(double)GRAVITY); // asin(acc_x)
-    yaw = MAG_Heading;                     // Magnetic heading
-  #else
-    pitch = -asin(DCM_Matrix[2][0]);
-    roll = atan2(DCM_Matrix[2][1],DCM_Matrix[2][2]);
-    yaw = atan2(DCM_Matrix[1][0],DCM_Matrix[0][0]);  //  ***** Need to correct for magnetic variation
-  #endif
+  pitch = -asin(DCM_Matrix[2][0]);
+  roll = atan2(DCM_Matrix[2][1],DCM_Matrix[2][2]);
+  yaw = atan2(DCM_Matrix[1][0],DCM_Matrix[0][0]);
 }
 

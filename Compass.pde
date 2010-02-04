@@ -5,7 +5,7 @@
 
 void Compass_Heading()
 {
-   float MAG_X;
+  float MAG_X;
   float MAG_Y;
   float cos_roll;
   float sin_roll;
@@ -21,5 +21,5 @@ void Compass_Heading()
   // Tilt compensated Magnetic filed Y:
   MAG_Y = magnetom_y*cos_roll-magnetom_z*sin_roll;
   // Magnetic Heading
-  MAG_Heading = atan2(-1*MAG_Y,MAG_X);
+  MAG_Heading = atan2(-MAG_Y,MAG_X);
 }
