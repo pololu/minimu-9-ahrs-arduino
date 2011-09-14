@@ -46,7 +46,6 @@ void Drift_correction(void)
   // Dynamic weighting of accelerometer info (reliability filter)
   // Weight for accelerometer info (<0.5G = 0.0, 1G = 1.0 , >1.5G = 0.0)
   Accel_weight = constrain(1 - 2*abs(1 - Accel_magnitude),0,1);  //  
-
   Vector_Cross_Product(&errorRollPitch[0],&Accel_Vector[0],&DCM_Matrix[2][0]); //adjust the ground of reference
   Vector_Scale(&Omega_P[0],&errorRollPitch[0],Kp_ROLLPITCH*Accel_weight);
   
@@ -79,10 +78,10 @@ void Accel_adjust(void)
 
 void Matrix_update(void)
 {
-  Gyro_Vector[0]=Gyro_Scaled_X(read_adc(0)); //gyro x roll
-  Gyro_Vector[1]=Gyro_Scaled_Y(read_adc(1)); //gyro y pitch
-  Gyro_Vector[2]=Gyro_Scaled_Z(read_adc(2)); //gyro Z yaw
-  
+  Gyro_Vector[0]=Gyro_Scaled_X(AN[0]-AN_OFFSET[0]); //gyro x roll
+  Gyro_Vector[1]=Gyro_Scaled_Y(AN[1]-AN_OFFSET[1]); //gyro y pitch
+  Gyro_Vector[2]=Gyro_Scaled_Z(AN[2]-AN_OFFSET[2]); //gyro Z yaw
+
   Accel_Vector[0]=accel_x;
   Accel_Vector[1]=accel_y;
   Accel_Vector[2]=accel_z;

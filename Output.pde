@@ -13,11 +13,11 @@ void printdata(void)
       #endif      
       #if PRINT_ANALOGS==1
       Serial.print(",AN:");
-      Serial.print(AN[sensors[0]]);  //(int)read_adc(0)
+      Serial.print(AN[0]);  //(int)read_adc(0)
       Serial.print(",");
-      Serial.print(AN[sensors[1]]);
+      Serial.print(AN[1]);
       Serial.print(",");
-      Serial.print(AN[sensors[2]]);  
+      Serial.print(AN[2]);  
       Serial.print(",");
       Serial.print(ACC[0]);
       Serial.print (",");
@@ -25,13 +25,13 @@ void printdata(void)
       Serial.print (",");
       Serial.print(ACC[2]);
       Serial.print(",");
-      Serial.print(magnetom_x);
+      Serial.print(c_magnetom_x);
       Serial.print (",");
-      Serial.print(magnetom_y);
+      Serial.print(c_magnetom_y);
       Serial.print (",");
-      Serial.print(magnetom_z);      
+      Serial.print(c_magnetom_z);
       #endif
-      /*#if PRINT_DCM == 1
+      #if PRINT_DCM == 1
       Serial.print (",DCM:");
       Serial.print(convert_to_dec(DCM_Matrix[0][0]));
       Serial.print (",");
@@ -50,13 +50,14 @@ void printdata(void)
       Serial.print(convert_to_dec(DCM_Matrix[2][1]));
       Serial.print (",");
       Serial.print(convert_to_dec(DCM_Matrix[2][2]));
-      #endif*/
+      #endif
       Serial.println();    
       
 }
 
-long convert_to_dec(float x)
+float convert_to_dec(float x)
 {
-  return x*10000000;
+  return x;
+  //return x*10000000;
 }
 

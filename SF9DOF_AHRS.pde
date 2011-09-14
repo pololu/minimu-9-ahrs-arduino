@@ -1,4 +1,3 @@
-
 // Sparkfveun 9DOF Razor IMU AHRS
 // 9 Degree of Measurement Attitude and Heading Reference System
 // Firmware v1.0
@@ -33,22 +32,18 @@
 
 #include <Wire.h>
 
-// ADXL345 Sensitivity(from datasheet) => 4mg/LSB   1G => 1000mg/4mg = 256 steps
-// Tested value : 248
-#define GRAVITY 248  //this equivalent to 1G in the raw data coming from the accelerometer 
-#define Accel_Scale(x) x*(GRAVITY/9.81)//Scaling the raw data of the accel to actual acceleration in meters for seconds square
+#define GRAVITY 256  //this equivalent to 1G in the raw data coming from the accelerometer 
 
-#define ToRad(x) (x*0.01745329252)  // *pi/180
-#define ToDeg(x) (x*57.2957795131)  // *180/pi
+#define ToRad(x) ((x)*0.01745329252)  // *pi/180
+#define ToDeg(x) ((x)*57.2957795131)  // *180/pi
 
-// LPR530 & LY530 Sensitivity (from datasheet) => (3.3mv at 3v)at 3.3v: 3mV/º/s, 3.22mV/ADC step => 0.93
-// Tested values : 0.92
-#define Gyro_Gain_X 0.92 //X axis Gyro gain
-#define Gyro_Gain_Y 0.92 //Y axis Gyro gain
-#define Gyro_Gain_Z 0.92 //Z axis Gyro gain
-#define Gyro_Scaled_X(x) x*ToRad(Gyro_Gain_X) //Return the scaled ADC raw data of the gyro in radians for second
-#define Gyro_Scaled_Y(x) x*ToRad(Gyro_Gain_Y) //Return the scaled ADC raw data of the gyro in radians for second
-#define Gyro_Scaled_Z(x) x*ToRad(Gyro_Gain_Z) //Return the scaled ADC raw data of the gyro in radians for second
+// 2000 dps full scale
+#define Gyro_Gain_X 0.07 //X axis Gyro gain
+#define Gyro_Gain_Y 0.07 //Y axis Gyro gain
+#define Gyro_Gain_Z 0.07 //Z axis Gyro gain
+#define Gyro_Scaled_X(x) ((x)*ToRad(Gyro_Gain_X)) //Return the scaled ADC raw data of the gyro in radians for second
+#define Gyro_Scaled_Y(x) ((x)*ToRad(Gyro_Gain_Y)) //Return the scaled ADC raw data of the gyro in radians for second
+#define Gyro_Scaled_Z(x) ((x)*ToRad(Gyro_Gain_Z)) //Return the scaled ADC raw data of the gyro in radians for second
 
 #define Kp_ROLLPITCH 0.02
 #define Ki_ROLLPITCH 0.00002
@@ -56,19 +51,17 @@
 #define Ki_YAW 0.00002
 
 /*For debugging purposes*/
-//OUTPUTMODE=1 will print the corrected data, 
+//OUTPUTMODE=1 will print the corrected data,
 //OUTPUTMODE=0 will print uncorrected data of the gyros (with drift)
 #define OUTPUTMODE 1
 
-//#define PRINT_DCM 0     //Will print the whole direction cosine matrix
-#define PRINT_ANALOGS 0 //Will print the analog raw data
+#define PRINT_DCM 0     //Will print the whole direction cosine matrix
+#define PRINT_ANALOGS 1 //Will print the analog raw data
 #define PRINT_EULER 1   //Will print the Euler angles Roll, Pitch and Yaw
 
-#define ADC_WARM_CYCLES 50
 #define STATUS_LED 13 
 
-int8_t sensors[3] = {1,2,0};  // Map the ADC channels gyro_x, gyro_y, gyro_z
-int SENSOR_SIGN[9] = {-1,1,-1,1,1,1,-1,-1,-1};  //Correct directions x,y,z - gyros, accels, magnetormeter
+int SENSOR_SIGN[9] = {-1,-1,-1,-1,-1,-1,-1,-1,-1};  //Correct directions x,y,z - gyros, accels, magnetormeter
 
 float G_Dt=0.02;    // Integration time (DCM algorithm)  We will run the integration loop at 50Hz if possible
 
@@ -85,6 +78,9 @@ int accel_z;
 int magnetom_x;
 int magnetom_y;
 int magnetom_z;
+float c_magnetom_x;
+float c_magnetom_y;
+float c_magnetom_z;
 float MAG_Heading;
 
 float Accel_Vector[3]= {0,0,0}; //Store the acceleration in a vector
@@ -125,38 +121,30 @@ float Temporary_Matrix[3][3]={
     0,0,0  }
 };
  
-//ADC variables
-volatile uint8_t MuxSel=0;
-volatile uint8_t analog_reference;
-volatile uint16_t analog_buffer[8];
-volatile uint8_t analog_count[8];
-
 void setup()
 { 
-  Serial.begin(57600);
+  Serial.begin(115200);
   pinMode (STATUS_LED,OUTPUT);  // Status LED
   
-  Analog_Reference(DEFAULT); 
-  Analog_Init();
   I2C_Init();
-  Accel_Init();
-  Read_Accel();
 
-  Serial.println("Sparkfun 9DOF Razor AHRS");
+
+  
 
   digitalWrite(STATUS_LED,LOW);
-  delay(1500);
+  delay(1000);
+  
+ Serial.println("Sparkfun 9DOF Razor AHRS");
  
-  // Magnetometer initialization
+  Accel_Init();
   Compass_Init();
+  Gyro_Init();
   
-  // Initialze ADC readings and buffers
-  Read_adc_raw();
-  delay(20);
-  
+  delay(500);
+    
   for(int i=0;i<32;i++)    // We take some readings...
     {
-    Read_adc_raw();
+    Read_Gyro();
     Read_Accel();
     for(int y=0; y<6; y++)   // Cumulate values
       AN_OFFSET[y] += AN[y];
@@ -166,7 +154,7 @@ void setup()
   for(int y=0; y<6; y++)
     AN_OFFSET[y] = AN_OFFSET[y]/32;
     
-  AN_OFFSET[5]-=GRAVITY*SENSOR_SIGN[5];
+  AN_OFFSET[5]+=GRAVITY;
   
   //Serial.println("Offset:");
   for(int y=0; y<6; y++)
@@ -175,7 +163,6 @@ void setup()
   delay(2000);
   digitalWrite(STATUS_LED,HIGH);
     
-  Read_adc_raw();     // ADC initialization
   timer=millis();
   delay(20);
   counter=0;
@@ -195,7 +182,7 @@ void loop() //Main Loop
     
     // *** DCM algorithm
     // Data adquisition
-    Read_adc_raw();   // This read gyro data
+    Read_Gyro();   // This read gyro data
     Read_Accel();     // Read I2C accelerometer
     
     if (counter > 5)  // Read compass data at 10Hz... (5 loop runs)
@@ -203,6 +190,7 @@ void loop() //Main Loop
       counter=0;
       Read_Compass();    // Read I2C magnetometer
       Compass_Heading(); // Calculate magnetic heading  
+      //Compass_Calibrate();
       }
     
     // Calculations...
@@ -213,7 +201,7 @@ void loop() //Main Loop
     // ***
    
     printdata();
-    
+    /*
     //Turn off the LED when you saturate any of the gyros.
     if((abs(Gyro_Vector[0])>=ToRad(300))||(abs(Gyro_Vector[1])>=ToRad(300))||(abs(Gyro_Vector[2])>=ToRad(300)))
       {
@@ -230,7 +218,7 @@ void loop() //Main Loop
       digitalWrite(STATUS_LED,LOW);  
     else
       digitalWrite(STATUS_LED,HIGH);  
-  
+    */
   }
    
 }
