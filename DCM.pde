@@ -1,3 +1,33 @@
+/*
+
+MinIMU9ArduinoAHRS
+Pololu MinIMU-9 + Arduino AHRS (Attitude and Heading Reference System)
+
+Copyright (c) 2011 Pololu Corporation.
+http://www.pololu.com/
+
+MinIMU9ArduinoAHRS is based on sf9domahrs by Doug Weibel and Jose Julio:
+http://code.google.com/p/sf9domahrs/
+
+sf9domahrs is based on ArduIMU v1.5 by Jordi Munoz and William Premerlani, Jose
+Julio and Doug Weibel:
+http://code.google.com/p/ardu-imu/
+
+MinIMU9ArduinoAHRS is free software: you can redistribute it and/or modify it
+under the terms of the GNU Lesser General Public License as published by the
+Free Software Foundation, either version 3 of the License, or (at your option)
+any later version.
+
+MinIMU9ArduinoAHRS is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for
+more details.
+
+You should have received a copy of the GNU Lesser General Public License along
+with MinIMU9ArduinoAHRS. If not, see <http://www.gnu.org/licenses/>.
+
+*/
+
 /**************************************************/
 void Normalize(void)
 {
@@ -46,6 +76,7 @@ void Drift_correction(void)
   // Dynamic weighting of accelerometer info (reliability filter)
   // Weight for accelerometer info (<0.5G = 0.0, 1G = 1.0 , >1.5G = 0.0)
   Accel_weight = constrain(1 - 2*abs(1 - Accel_magnitude),0,1);  //  
+
   Vector_Cross_Product(&errorRollPitch[0],&Accel_Vector[0],&DCM_Matrix[2][0]); //adjust the ground of reference
   Vector_Scale(&Omega_P[0],&errorRollPitch[0],Kp_ROLLPITCH*Accel_weight);
   
@@ -81,7 +112,7 @@ void Matrix_update(void)
   Gyro_Vector[0]=Gyro_Scaled_X(AN[0]-AN_OFFSET[0]); //gyro x roll
   Gyro_Vector[1]=Gyro_Scaled_Y(AN[1]-AN_OFFSET[1]); //gyro y pitch
   Gyro_Vector[2]=Gyro_Scaled_Z(AN[2]-AN_OFFSET[2]); //gyro Z yaw
-
+  
   Accel_Vector[0]=accel_x;
   Accel_Vector[1]=accel_y;
   Accel_Vector[2]=accel_z;

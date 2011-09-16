@@ -1,3 +1,32 @@
+/*
+
+MinIMU9ArduinoAHRS
+Pololu MinIMU-9 + Arduino AHRS (Attitude and Heading Reference System)
+
+Copyright (c) 2011 Pololu Corporation.
+http://www.pololu.com/
+
+MinIMU9ArduinoAHRS is based on sf9domahrs by Doug Weibel and Jose Julio:
+http://code.google.com/p/sf9domahrs/
+
+sf9domahrs is based on ArduIMU v1.5 by Jordi Munoz and William Premerlani, Jose
+Julio and Doug Weibel:
+http://code.google.com/p/ardu-imu/
+
+MinIMU9ArduinoAHRS is free software: you can redistribute it and/or modify it
+under the terms of the GNU Lesser General Public License as published by the
+Free Software Foundation, either version 3 of the License, or (at your option)
+any later version.
+
+MinIMU9ArduinoAHRS is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for
+more details.
+
+You should have received a copy of the GNU Lesser General Public License along
+with MinIMU9ArduinoAHRS. If not, see <http://www.gnu.org/licenses/>.
+
+*/
 
 void printdata(void)
 {    
@@ -31,7 +60,7 @@ void printdata(void)
       Serial.print (",");
       Serial.print(c_magnetom_z);
       #endif
-      #if PRINT_DCM == 1
+      /*#if PRINT_DCM == 1
       Serial.print (",DCM:");
       Serial.print(convert_to_dec(DCM_Matrix[0][0]));
       Serial.print (",");
@@ -50,14 +79,13 @@ void printdata(void)
       Serial.print(convert_to_dec(DCM_Matrix[2][1]));
       Serial.print (",");
       Serial.print(convert_to_dec(DCM_Matrix[2][2]));
-      #endif
+      #endif*/
       Serial.println();    
       
 }
 
-float convert_to_dec(float x)
+long convert_to_dec(float x)
 {
-  return x;
-  //return x*10000000;
+  return x*10000000;
 }
 
