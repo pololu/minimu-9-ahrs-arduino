@@ -56,6 +56,15 @@ with MinIMU-9-Arduino-AHRS. If not, see <http://www.gnu.org/licenses/>.
 #define Gyro_Scaled_Y(x) ((x)*ToRad(Gyro_Gain_Y)) //Return the scaled ADC raw data of the gyro in radians for second
 #define Gyro_Scaled_Z(x) ((x)*ToRad(Gyro_Gain_Z)) //Return the scaled ADC raw data of the gyro in radians for second
 
+// LSM303DLH magnetometer calibration constants; use the Calibrate example from
+// the Pololu LSM303DLH library to find the right values for your board
+#define M_X_MIN -796
+#define M_Y_MIN -457
+#define M_Z_MIN -424
+#define M_X_MAX 197
+#define M_Y_MAX 535
+#define M_Z_MAX 397
+
 #define Kp_ROLLPITCH 0.02
 #define Ki_ROLLPITCH 0.00002
 #define Kp_YAW 1.2
