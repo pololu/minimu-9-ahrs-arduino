@@ -1,43 +1,54 @@
-// Sparkfveun 9DOF Razor IMU AHRS
-// 9 Degree of Measurement Attitude and Heading Reference System
-// Firmware v1.0
-//
-// Released under Creative Commons License 
-// Code by Doug Weibel and Jose Julio
-// Based on ArduIMU v1.5 by Jordi Munoz and William Premerlani, Jose Julio and Doug Weibel
+/*
+
+MinIMU-9-Arduino-AHRS
+Pololu MinIMU-9 + Arduino Attitude and Heading Reference System
+
+Copyright (c) 2011 Pololu Corporation.
+http://www.pololu.com/
+
+MinIMU-9-Arduino-AHRS is based on sf9domahrs by Doug Weibel and Jose Julio:
+http://code.google.com/p/sf9domahrs/
+
+sf9domahrs is based on ArduIMU v1.5 by Jordi Munoz and William Premerlani, Jose
+Julio and Doug Weibel:
+http://code.google.com/p/ardu-imu/
+
+MinIMU-9-Arduino-AHRS is free software: you can redistribute it and/or modify it
+under the terms of the GNU Lesser General Public License as published by the
+Free Software Foundation, either version 3 of the License, or (at your option)
+any later version.
+
+MinIMU-9-Arduino-AHRS is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for
+more details.
+
+You should have received a copy of the GNU Lesser General Public License along
+with MinIMU-9-Arduino-AHRS. If not, see <http://www.gnu.org/licenses/>.
+
+*/
 
 // Axis definition: 
-   // X axis pointing forward (to the FTDI connector)
+   // X axis pointing forward
    // Y axis pointing to the right 
    // and Z axis pointing down.
 // Positive pitch : nose up
 // Positive roll : right wing down
 // Positive yaw : clockwise
 
-/* Hardware version - v13
-	
-	ATMega328@3.3V w/ external 8MHz resonator
-	High Fuse DA
-        Low Fuse FF
-	
-	ADXL345: Accelerometer
-	HMC5843: Magnetometer
-	LY530:	Yaw Gyro
-	LPR530:	Pitch and Roll Gyro
-
-        Programmer : 3.3v FTDI
-        Arduino IDE : Select board  "Arduino Duemilanove w/ATmega328"
-*/
-// This code works also on ATMega168 Hardware
+// tested with Arduino Uno with ATmega328 and Arduino Duemilanove with ATMega168
 
 #include <Wire.h>
 
+// LSM303DLH accelerometer: 8 g sensitivity
+// 3.8 mg/digit; 1 g = 256
 #define GRAVITY 256  //this equivalent to 1G in the raw data coming from the accelerometer 
 
 #define ToRad(x) ((x)*0.01745329252)  // *pi/180
 #define ToDeg(x) ((x)*57.2957795131)  // *180/pi
 
-// 2000 dps full scale
+// L3G4200D gyro: 2000 dps full scale
+// 70 mdps/digit; 1 dps = 0.07
 #define Gyro_Gain_X 0.07 //X axis Gyro gain
 #define Gyro_Gain_Y 0.07 //Y axis Gyro gain
 #define Gyro_Gain_Z 0.07 //Z axis Gyro gain
@@ -51,16 +62,17 @@
 #define Ki_YAW 0.00002
 
 /*For debugging purposes*/
-//OUTPUTMODE=1 will print the corrected data,
+//OUTPUTMODE=1 will print the corrected data, 
 //OUTPUTMODE=0 will print uncorrected data of the gyros (with drift)
 #define OUTPUTMODE 1
 
-#define PRINT_DCM 0     //Will print the whole direction cosine matrix
-#define PRINT_ANALOGS 1 //Will print the analog raw data
+//#define PRINT_DCM 0     //Will print the whole direction cosine matrix
+#define PRINT_ANALOGS 0 //Will print the analog raw data
 #define PRINT_EULER 1   //Will print the Euler angles Roll, Pitch and Yaw
 
 #define STATUS_LED 13 
 
+// the algorithm expects +Z to point up, so we have to reverse all of the readings if +Z is pointing down
 int SENSOR_SIGN[9] = {-1,-1,-1,-1,-1,-1,-1,-1,-1};  //Correct directions x,y,z - gyros, accels, magnetormeter
 
 float G_Dt=0.02;    // Integration time (DCM algorithm)  We will run the integration loop at 50Hz if possible
@@ -128,20 +140,17 @@ void setup()
   
   I2C_Init();
 
-
-  
+  Serial.println("Pololu MinIMU-9 + Arduino AHRS");
 
   digitalWrite(STATUS_LED,LOW);
-  delay(1000);
-  
- Serial.println("Sparkfun 9DOF Razor AHRS");
+  delay(1500);
  
   Accel_Init();
   Compass_Init();
   Gyro_Init();
   
-  delay(500);
-    
+  delay(20);
+  
   for(int i=0;i<32;i++)    // We take some readings...
     {
     Read_Gyro();
@@ -154,7 +163,7 @@ void setup()
   for(int y=0; y<6; y++)
     AN_OFFSET[y] = AN_OFFSET[y]/32;
     
-  AN_OFFSET[5]+=GRAVITY;
+  AN_OFFSET[5]-=GRAVITY*SENSOR_SIGN[5];
   
   //Serial.println("Offset:");
   for(int y=0; y<6; y++)
@@ -190,7 +199,6 @@ void loop() //Main Loop
       counter=0;
       Read_Compass();    // Read I2C magnetometer
       Compass_Heading(); // Calculate magnetic heading  
-      //Compass_Calibrate();
       }
     
     // Calculations...
@@ -201,24 +209,6 @@ void loop() //Main Loop
     // ***
    
     printdata();
-    /*
-    //Turn off the LED when you saturate any of the gyros.
-    if((abs(Gyro_Vector[0])>=ToRad(300))||(abs(Gyro_Vector[1])>=ToRad(300))||(abs(Gyro_Vector[2])>=ToRad(300)))
-      {
-      if (gyro_sat<50)
-        gyro_sat+=10;
-      }
-    else
-      {
-      if (gyro_sat>0)
-        gyro_sat--;
-      }
-  
-    if (gyro_sat>0)
-      digitalWrite(STATUS_LED,LOW);  
-    else
-      digitalWrite(STATUS_LED,HIGH);  
-    */
   }
    
 }
