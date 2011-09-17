@@ -28,13 +28,22 @@ with MinIMU9ArduinoAHRS. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// Axis definition: 
+// Uncomment the below line to use this axis definition: 
    // X axis pointing forward
    // Y axis pointing to the right 
    // and Z axis pointing down.
 // Positive pitch : nose up
 // Positive roll : right wing down
 // Positive yaw : clockwise
+int SENSOR_SIGN[9] = {1,1,1,-1,-1,-1,1,1,1}; //Correct directions x,y,z - gyro, accelerometer, magnetometer
+// Uncomment the below line to use this axis definition: 
+   // X axis pointing forward
+   // Y axis pointing to the left 
+   // and Z axis pointing up.
+// Positive pitch : nose down
+// Positive roll : right wing down
+// Positive yaw : counterclockwise
+//int SENSOR_SIGN[9] = {1,-1,-1,-1,1,1,1,-1,-1}; //Correct directions x,y,z - gyro, accelerometer, magnetometer
 
 // tested with Arduino Uno with ATmega328 and Arduino Duemilanove with ATMega168
 
@@ -81,18 +90,17 @@ with MinIMU9ArduinoAHRS. If not, see <http://www.gnu.org/licenses/>.
 
 #define STATUS_LED 13 
 
-// the algorithm expects +Z to point up, so we have to reverse all of the readings if +Z is pointing down
-int SENSOR_SIGN[9] = {-1,-1,-1,-1,-1,-1,-1,-1,-1};  //Correct directions x,y,z - gyros, accels, magnetormeter
-
 float G_Dt=0.02;    // Integration time (DCM algorithm)  We will run the integration loop at 50Hz if possible
 
 long timer=0;   //general purpuse timer
 long timer_old;
 long timer24=0; //Second timer used to print values 
-int AN[6]; //array that store the 3 ADC filtered data (gyros)
+int AN[6]; //array that stores the gyro and accelerometer data
 int AN_OFFSET[6]={0,0,0,0,0,0}; //Array that stores the Offset of the sensors
-int ACC[3];          //array that store the accelerometers data
 
+int gyro_x;
+int gyro_y;
+int gyro_z;
 int accel_x;
 int accel_y;
 int accel_z;

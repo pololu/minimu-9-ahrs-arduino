@@ -49,9 +49,12 @@ void Read_Gyro()
 {
   gyro.read();
   
-  AN[0] = gyro.g.x;    // X axis
-  AN[1] = gyro.g.y;    // Y axis 
-  AN[2] = gyro.g.z;    // Z axis
+  AN[0] = gyro.g.x;
+  AN[1] = gyro.g.y;
+  AN[2] = gyro.g.z;
+  gyro_x = SENSOR_SIGN[0] * (AN[0] - AN_OFFSET[0]);
+  gyro_y = SENSOR_SIGN[1] * (AN[1] - AN_OFFSET[1]);
+  gyro_z = SENSOR_SIGN[2] * (AN[2] - AN_OFFSET[2]);
 }
 
 void Accel_Init()
@@ -65,15 +68,12 @@ void Read_Accel()
 {
   compass.readAcc();
   
-  ACC[0] = compass.a.x;
-  ACC[1] = compass.a.y;
-  ACC[2] = compass.a.z;
-  AN[3] = ACC[0];
-  AN[4] = ACC[1];
-  AN[5] = ACC[2];
-  accel_x = SENSOR_SIGN[3] * (ACC[0] - AN_OFFSET[3]);
-  accel_y = SENSOR_SIGN[4] * (ACC[1] - AN_OFFSET[4]);
-  accel_z = SENSOR_SIGN[5] * (ACC[2] - AN_OFFSET[5]);
+  AN[3] = compass.a.x;
+  AN[4] = compass.a.y;
+  AN[5] = compass.a.z;
+  accel_x = SENSOR_SIGN[3] * (AN[3] - AN_OFFSET[3]);
+  accel_y = SENSOR_SIGN[4] * (AN[4] - AN_OFFSET[4]);
+  accel_z = SENSOR_SIGN[5] * (AN[5] - AN_OFFSET[5]);
 }
 
 void Compass_Init()

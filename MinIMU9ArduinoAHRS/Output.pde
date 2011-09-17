@@ -48,11 +48,11 @@ void printdata(void)
       Serial.print(",");
       Serial.print(AN[2]);  
       Serial.print(",");
-      Serial.print(ACC[0]);
+      Serial.print(AN[3]);
       Serial.print (",");
-      Serial.print(ACC[1]);
+      Serial.print(AN[4]);
       Serial.print (",");
-      Serial.print(ACC[2]);
+      Serial.print(AN[5]);
       Serial.print(",");
       Serial.print(c_magnetom_x);
       Serial.print (",");

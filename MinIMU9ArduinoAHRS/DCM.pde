@@ -109,9 +109,9 @@ void Accel_adjust(void)
 
 void Matrix_update(void)
 {
-  Gyro_Vector[0]=Gyro_Scaled_X(AN[0]-AN_OFFSET[0]); //gyro x roll
-  Gyro_Vector[1]=Gyro_Scaled_Y(AN[1]-AN_OFFSET[1]); //gyro y pitch
-  Gyro_Vector[2]=Gyro_Scaled_Z(AN[2]-AN_OFFSET[2]); //gyro Z yaw
+  Gyro_Vector[0]=Gyro_Scaled_X(gyro_x); //gyro x roll
+  Gyro_Vector[1]=Gyro_Scaled_Y(gyro_y); //gyro y pitch
+  Gyro_Vector[2]=Gyro_Scaled_Z(gyro_z); //gyro Z yaw
   
   Accel_Vector[0]=accel_x;
   Accel_Vector[1]=accel_y;
