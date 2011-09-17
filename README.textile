@@ -1,0 +1,48 @@
+h1. Pololu MinIMU-9 + Arduino AHRS (Attitude and Heading Reference System)
+
+Version: 1.0.0
+Release Date: 2011-09-16
+"www.pololu.com":http://www.pololu.com/
+
+h2. Summary
+
+This is a program (sketch) for the "Arduino":http://pololu.com/catalog/product/1616 that interfaces with the Pololu "MinIMU-9 Gyro, Accelerometer, and Compass (L3G4200D and LSM303DLH Carrier)":http://www.pololu.com/catalog/product/1264. It processes the raw rotation, acceleration, and magnetic data from the MinIMU-9 to derive an estimate of the board's absolute orientation, which it outputs through the Arduino's serial interface, turning the MinIMU-9 and Arduino into an attitude and heading reference system (AHRS).
+
+A Python test program is also included. It communicates with the Arduino serially and displays a 3D representation of the MinIMU-9 board, allowing you to visualize the output of the AHRS in real time.
+
+Both the Arduino software and Python test program are based on "sf9domahrs":http://code.google.com/p/sf9domahrs/ by Doug Weibel and Jose Julio, which is in turn based on "ArduIMU":http://code.google.com/p/ardu-imu/ v1.5 by Jordi Munoz, William Premerlani, Jose Julio, and Doug Weibel.
+
+h2. Getting Started
+ 
+h3. Software
+
+The Arduino program uses Pololu's "L3G4200D":https://github.com/pololu/L3G4200D and "LSM303DLH":https://github.com/pololu/LSM303DLH Arduino libraries, which can also be downloaded from GitHub. Follow the instructions on their respective pages to install the libraries.
+
+The Python test program also has several dependencies you must install before you can run it:
+
+* "Python 2.6 or 2.7":http://www.python.org/download/
+* "pywin32":http://sourceforge.net/projects/pywin32/files/pywin32/
+* "pyserial":http://sourceforge.net/projects/pyserial/files/pyserial/
+* "VPython":http://vpython.org/contents/download_windows.html
+
+After you have set up the prerequisites, download the archive from "GitHub":https://github.com/pololu/MinIMU9ArduinoAHRS and decompress it.
+
+h3. Hardware
+
+The MinIMU-9 board can be purchased on "Pololu's website":http://www.pololu.com/catalog/product/1250.
+
+Make the following connections with wires between the Arduino and the MinIMU-9:
+
+pre. Arduino Uno/Duemilanove    MinIMU-9
+                    5V  ->  VIN
+                   GND  ->  GND
+          Analog Pin 5  ->  SCL
+          Analog Pin 4  ->  SDA
+
+pre. Arduino Mega                MinIMU-9
+                    5V  ->  VIN
+                   GND  ->  GND
+         Analog Pin 21  ->  SCL
+         Analog Pin 20  ->  SDA
+
+h3. Using the AHRS
