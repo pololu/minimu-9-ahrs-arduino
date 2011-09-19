@@ -44,5 +44,23 @@ pre. Arduino Mega                MinIMU-9
                    GND  ->  GND
          Analog Pin 21  ->  SCL
          Analog Pin 20  ->  SDA
-
+		 
 h3. Using the AHRS
+
+Open the sketch in the Arduino environment by opening one of the .pde files in the MinIMU9ArduinoAHRS folder.
+
+By default, the Arduino code treats the positive X axis of the MinIMU-9 as forward and the negative Z axis as up (so that the components are on the bottom of the board and the silkscreen is on top). If you want the positive Z axis to be up instead (so that the components are on top), find the definition of @SENSOR_SIGN[9]@ at the beginning of MinIMU9ArduinoAHRS.pde and uncomment the appropriate line (after commenting the original). Then, upload the program to your Arduino.
+
+When the AHRS program first starts running, it takes some readings to establish a baseline orientation, during which it expects both the roll and the pitch of the sensors to be zero. Therefore, it is important to keep the MinIMU-9 level for a few seconds after powering on or resetting the Arduino.
+
+After performing the startup routine, the program constantly takes readings from the gyro, accelerometer, and magnetometer on the MinIMU-9 and calculates an estimate of the board's orientation. It outputs estimated roll, pitch, and yaw angles (in degrees) through the Arduino's serial interface, and you can view the output with the Arduino Serial Monitor.
+
+Example output:
+
+pre. !ANG:0.08,0.09,137.01
+!ANG:0.14,0.11,137.04
+!ANG:0.15,0.12,137.06
+
+If you run the Python test program (MinIMU-9-test.py) while the Arduino is connected to your computer, you should be able to see three indicators showing the roll, pitch, and yaw angles being calculated by the AHRS, as well as a 3D representation of the MinIMU-9 board (the arrow indicates the positive X direction). You can watch these change in real time as you move the board around.
+
+!screenshot.png!
