@@ -6,7 +6,7 @@ Release Date: 2011-09-16
 
 h2. Summary
 
-This is a program (sketch) for the "Arduino":http://pololu.com/catalog/product/1616 that interfaces with the Pololu "MinIMU-9 Gyro, Accelerometer, and Compass (L3G4200D and LSM303DLH Carrier)":http://www.pololu.com/catalog/product/1264. It processes the raw rotation, acceleration, and magnetic data from the MinIMU-9 to derive an estimate of the board's absolute orientation, which it outputs through the Arduino's serial interface, turning the MinIMU-9 and Arduino into an attitude and heading reference system (AHRS).
+MinIMU-9-Arduino-AHRS provides a program (sketch) for the "Arduino":http://pololu.com/catalog/product/1616 that interfaces with the Pololu "MinIMU-9 Gyro, Accelerometer, and Compass (L3G4200D and LSM303DLH Carrier)":http://www.pololu.com/catalog/product/1264. It processes the raw rotation, acceleration, and magnetic data from the MinIMU-9 to derive an estimate of the board's absolute orientation, which it outputs through the Arduino's serial interface, turning the MinIMU-9 and Arduino into an attitude and heading reference system (AHRS).
 
 A Python test program is also included. It communicates with the Arduino serially and displays a 3D representation of the MinIMU-9 board, allowing you to visualize the output of the AHRS in real time.
 
@@ -25,7 +25,7 @@ The Python test program also has several dependencies you must install before yo
 * "pyserial":http://sourceforge.net/projects/pyserial/files/pyserial/
 * "VPython":http://vpython.org/contents/download_windows.html
 
-After you have set up the prerequisites, download the archive from "GitHub":https://github.com/pololu/MinIMU9ArduinoAHRS and decompress it.
+After you have set up the prerequisites, download the archive from "GitHub":https://github.com/pololu/MinIMU-9-Arduino-AHRS and decompress it.
 
 h3. Hardware
 
@@ -47,9 +47,9 @@ pre. Arduino Mega                MinIMU-9
 		 
 h3. Using the AHRS
 
-Open the sketch in the Arduino environment by opening one of the .pde files in the MinIMU9ArduinoAHRS folder.
+Open the sketch in the Arduino environment by opening one of the .pde files in the MinIMU9AHRS folder.
 
-By default, the Arduino code treats the positive X axis of the MinIMU-9 as forward and the negative Z axis as up (so that the components are on the bottom of the board and the silkscreen is on top). If you want the positive Z axis to be up instead (so that the components are on top), find the definition of @SENSOR_SIGN[9]@ at the beginning of MinIMU9ArduinoAHRS.pde and uncomment the appropriate line (after commenting the original). Then, upload the program to your Arduino.
+By default, the Arduino code treats the positive X axis of the MinIMU-9 as forward and the negative Z axis as up (so that the components are on the bottom of the board and the silkscreen is on top). If you want the positive Z axis to be up instead (so that the components are on top), find the definition of @SENSOR_SIGN[9]@ at the beginning of MinIMU9AHRS.pde and uncomment the appropriate line (after commenting the original). Then, upload the program to your Arduino.
 
 When the AHRS program first starts running, it takes some readings to establish a baseline orientation, during which it expects both the roll and the pitch of the sensors to be zero. Therefore, it is important to keep the MinIMU-9 level for a few seconds after powering on or resetting the Arduino.
 
