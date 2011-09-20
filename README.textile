@@ -29,7 +29,7 @@ After you have set up the prerequisites, download the archive from "GitHub":http
 
 h3. Hardware
 
-The MinIMU-9 board can be purchased on "Pololu's website":http://www.pololu.com/catalog/product/1250.
+The MinIMU-9 board can be purchased on "Pololu's website":http://www.pololu.com/catalog/product/1264.
 
 Make the following connections with wires between the Arduino and the MinIMU-9:
 
