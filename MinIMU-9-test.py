@@ -46,7 +46,7 @@ from time import time
 grad2rad = 3.141592/180.0
 
 # Check your COM port and baud rate
-ser = serial.Serial(port='COM9',baudrate=57600, timeout=1)
+ser = serial.Serial(port='COM9',baudrate=115200, timeout=1)
 
 # Main scene
 scene=display(title="Pololu MinIMU-9 + Arduino AHRS")

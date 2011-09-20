@@ -61,6 +61,6 @@ pre. !ANG:0.08,0.09,137.01
 !ANG:0.14,0.11,137.04
 !ANG:0.15,0.12,137.06
 
-If you run the Python test program (MinIMU-9-test.py) while the Arduino is connected to your computer, you should be able to see three indicators showing the roll, pitch, and yaw angles being calculated by the AHRS, as well as a 3D representation of the MinIMU-9 board (the arrow indicates the positive X direction). You can watch these change in real time as you move the board around.
+To visualize the output of the AHRS, you can run the Python test program (MinIMU-9-test.py) while the Arduino is connected to your computer. (You will probably have to edit the file first and change the definition of @ser@ to match the COM port your Arduino is using.) You should be able to see three indicators showing the roll, pitch, and yaw angles being calculated by the AHRS, as well as a 3D representation of the MinIMU-9 board (the arrow indicates the positive X direction). You can watch these change in real time as you move the board around.
 
 !http://b.pololu-files.com/picture/0J3722.600.jpg!
