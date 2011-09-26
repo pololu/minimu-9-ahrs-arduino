@@ -47,11 +47,13 @@ pre. Arduino Mega                MinIMU-9
 		 
 h3. Using the AHRS
 
-Open the sketch in the Arduino environment by opening one of the .pde files in the MinIMU9AHRS folder.
+From the Arduino environment, open MinIMU9AHRS.pde, which can be found in the MinIMU9AHRS folder.
 
-By default, the Arduino code treats the positive X axis of the MinIMU-9 as forward and the negative Z axis as up (so that the components are on the bottom of the board and the silkscreen is on top). If you want the positive Z axis to be up instead (so that the components are on top), find the definition of @SENSOR_SIGN[9]@ at the beginning of MinIMU9AHRS.pde and uncomment the appropriate line (after commenting the original). Then, upload the program to your Arduino.
+By default, the Arduino code treats the positive X axis of the MinIMU-9 as forward and the negative Z axis as up (so that the components are on the bottom of the board and the silkscreen is on top). If you want the positive Z axis to be up instead (so that the components are on top), find the definition of @SENSOR_SIGN[9]@ at the beginning of MinIMU9AHRS.pde and uncomment the appropriate line (after commenting the original).
 
-When the AHRS program first starts running, it takes some readings to establish a baseline orientation, during which it expects both the roll and the pitch of the sensors to be zero. Therefore, it is important to keep the MinIMU-9 level for a few seconds after powering on or resetting the Arduino.
+In the Tools menu, select the appropriate board and serial port. Click the "Upload" button to compile the sketch and load it onto your Arduino.
+
+When the AHRS program first starts running, it takes some readings to establish a baseline orientation, during which it expects both the roll and the pitch of the sensors to be zero. Therefore, it is important to keep the MinIMU-9 level for a few seconds after powering on or resetting the Arduino or connecting to it from a computer.
 
 After performing the startup routine, the program constantly takes readings from the gyro, accelerometer, and magnetometer on the MinIMU-9 and calculates an estimate of the board's orientation. It outputs estimated roll, pitch, and yaw angles (in degrees) through the Arduino's serial interface, and you can view the output with the Arduino Serial Monitor.
 
