@@ -20,8 +20,8 @@ The Arduino program uses Pololu's "L3G4200D":https://github.com/pololu/L3G4200D 
 
 The Python test program also has several dependencies you must install before you can run it:
 
-* "Python 2.6 or 2.7":http://www.python.org/download/
-* "pywin32":http://sourceforge.net/projects/pywin32/files/pywin32/
+* "Python 2.6 or 2.7":http://www.python.org/download/ (download the 32-bit version)
+* "pywin32":http://sourceforge.net/projects/pywin32/files/pywin32/ (again, download the 32-bit version)
 * "pyserial":http://sourceforge.net/projects/pyserial/files/pyserial/
 * "VPython":http://vpython.org/contents/download_windows.html
 
