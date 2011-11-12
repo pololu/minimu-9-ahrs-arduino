@@ -29,10 +29,10 @@ with MinIMU-9-Arduino-AHRS. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include <L3G4200D.h>
-#include <LSM303DLH.h>
+#include <LSM303.h>
 
 L3G4200D gyro;
-LSM303DLH compass;
+LSM303 compass;
 
 void I2C_Init()
 {
@@ -59,8 +59,8 @@ void Read_Gyro()
 
 void Accel_Init()
 {
-  compass.writeAccReg(LSM303DLH_CTRL_REG1_A, 0x27); // normal power mode, all axes enabled, 50 Hz
-  compass.writeAccReg(LSM303DLH_CTRL_REG4_A, 0x30); // 8 g full scale
+  compass.writeAccReg(LSM303_CTRL_REG1_A, 0x27); // normal power mode, all axes enabled, 50 Hz
+  compass.writeAccReg(LSM303_CTRL_REG4_A, 0x30); // 8 g full scale
 }
 
 // Reads x,y and z accelerometer registers
@@ -78,7 +78,8 @@ void Read_Accel()
 
 void Compass_Init()
 {
-  compass.writeMagReg(LSM303DLH_MR_REG_M, 0x00); // continuous conversion mode
+  compass.init();
+  compass.writeMagReg(LSM303_MR_REG_M, 0x00); // continuous conversion mode
   // 15 Hz default
 }
 
