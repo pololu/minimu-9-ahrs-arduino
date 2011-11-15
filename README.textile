@@ -1,12 +1,12 @@
 h1. Pololu MinIMU-9 + Arduino AHRS (Attitude and Heading Reference System)
 
-Version: 1.0.0
-Release Date: 2011-09-20
+Version: 1.1.0
+Release Date: 2011-11-14
 "www.pololu.com":http://www.pololu.com/
 
 h2. Summary
 
-MinIMU-9-Arduino-AHRS provides a program (sketch) for the "Arduino":http://pololu.com/catalog/product/1616 that interfaces with the Pololu "MinIMU-9 Gyro, Accelerometer, and Compass (L3G4200D and LSM303DLH Carrier)":http://www.pololu.com/catalog/product/1264. It processes the raw rotation, acceleration, and magnetic data from the MinIMU-9 to derive an estimate of the board's absolute orientation, which it outputs through the Arduino's serial interface, turning the MinIMU-9 and Arduino into an attitude and heading reference system (AHRS).
+MinIMU-9-Arduino-AHRS provides a program (sketch) for the "Arduino":http://pololu.com/catalog/product/1616 that interfaces with the Pololu "MinIMU-9 Gyro, Accelerometer, and Compass (L3G4200D and LSM303DLM Carrier)":http://www.pololu.com/catalog/product/1265 (it also works with the older "MinIMU-9 L3G4200D and LSM303DLH carrier":http://www.pololu.com/catalog/product/1264). It processes the raw rotation, acceleration, and magnetic data from the MinIMU-9 to derive an estimate of the board's absolute orientation, which it outputs through the Arduino's serial interface, turning the MinIMU-9 and Arduino into an attitude and heading reference system (AHRS).
 
 A Python test program is also included. It communicates with the Arduino serially and displays a 3D representation of the MinIMU-9 board, allowing you to visualize the output of the AHRS in real time.
 
@@ -16,7 +16,7 @@ h2. Getting Started
  
 h3. Software
 
-The Arduino program uses Pololu's "L3G4200D":https://github.com/pololu/L3G4200D and "LSM303DLH":https://github.com/pololu/LSM303DLH Arduino libraries, which can also be downloaded from GitHub. Follow the instructions on their respective pages to install the libraries.
+The Arduino program uses Pololu's "L3G4200D":https://github.com/pololu/L3G4200D and "LSM303":https://github.com/pololu/LSM303 Arduino libraries, which can also be downloaded from GitHub. Follow the instructions on their respective pages to install the libraries.
 
 The Python test program also has several dependencies you must install before you can run it:
 
