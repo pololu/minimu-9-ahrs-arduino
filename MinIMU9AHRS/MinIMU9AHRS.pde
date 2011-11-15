@@ -49,7 +49,7 @@ int SENSOR_SIGN[9] = {1,1,1,-1,-1,-1,1,1,1}; //Correct directions x,y,z - gyro, 
 
 #include <Wire.h>
 
-// LSM303DLH accelerometer: 8 g sensitivity
+// LSM303 accelerometer: 8 g sensitivity
 // 3.8 mg/digit; 1 g = 256
 #define GRAVITY 256  //this equivalent to 1G in the raw data coming from the accelerometer 
 
@@ -65,8 +65,8 @@ int SENSOR_SIGN[9] = {1,1,1,-1,-1,-1,1,1,1}; //Correct directions x,y,z - gyro, 
 #define Gyro_Scaled_Y(x) ((x)*ToRad(Gyro_Gain_Y)) //Return the scaled ADC raw data of the gyro in radians for second
 #define Gyro_Scaled_Z(x) ((x)*ToRad(Gyro_Gain_Z)) //Return the scaled ADC raw data of the gyro in radians for second
 
-// LSM303DLH magnetometer calibration constants; use the Calibrate example from
-// the Pololu LSM303DLH library to find the right values for your board
+// LSM303 magnetometer calibration constants; use the Calibrate example from
+// the Pololu LSM303 library to find the right values for your board
 #define M_X_MIN -796
 #define M_Y_MIN -457
 #define M_Z_MIN -424

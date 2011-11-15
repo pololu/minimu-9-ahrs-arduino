@@ -51,6 +51,8 @@ From the Arduino environment, open MinIMU9AHRS.pde, which can be found in the Mi
 
 By default, the Arduino code treats the positive X axis of the MinIMU-9 as forward and the negative Z axis as up (so that the components are on the bottom of the board and the silkscreen is on top). If you want the positive Z axis to be up instead (so that the components are on top), find the definition of @SENSOR_SIGN[9]@ at the beginning of MinIMU9AHRS.pde and uncomment the appropriate line (after commenting the original).
 
+To ensure that the heading derived from the compass is accurate, you should change the @M_X_MIN@ through @M_Z_MAX@ calibration constants to appropriate values. You can use the Calibrate example from the "LSM303 library":https://github.com/pololu/LSM303 to find the right values for the board.
+
 In the Tools menu, select the appropriate board and serial port. Click the "Upload" button to compile the sketch and load it onto your Arduino.
 
 When the AHRS program first starts running, it takes some readings to establish a baseline orientation, during which it expects both the roll and the pitch of the sensors to be zero. Therefore, it is important to keep the MinIMU-9 level for a few seconds after powering on or resetting the Arduino or connecting to it from a computer.
