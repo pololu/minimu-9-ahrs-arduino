@@ -1,7 +1,7 @@
 h1. Pololu MinIMU-9 + Arduino AHRS (Attitude and Heading Reference System)
 
 Version: 1.1.0
-Release Date: 2011-11-14
+Release Date: 2011-11-15
 "www.pololu.com":http://www.pololu.com/
 
 h2. Summary
