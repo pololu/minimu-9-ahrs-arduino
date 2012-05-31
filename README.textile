@@ -42,8 +42,8 @@ pre. Arduino Uno/Duemilanove    MinIMU-9
 pre. Arduino Mega                MinIMU-9
                     5V  ->  VIN
                    GND  ->  GND
-         Analog Pin 21  ->  SCL
-         Analog Pin 20  ->  SDA
+        Digital Pin 21  ->  SCL
+        Digital Pin 20  ->  SDA
 		 
 h3. Using the AHRS
 
