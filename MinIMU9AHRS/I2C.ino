@@ -41,6 +41,7 @@ void I2C_Init()
 
 void Gyro_Init()
 {
+  gyro.init();
   gyro.writeReg(L3G4200D_CTRL_REG1, 0x0F); // normal power mode, all axes enabled, 100 Hz
   gyro.writeReg(L3G4200D_CTRL_REG4, 0x20); // 2000 dps full scale
 }
@@ -59,8 +60,12 @@ void Read_Gyro()
 
 void Accel_Init()
 {
+  compass.init();
   compass.writeAccReg(LSM303_CTRL_REG1_A, 0x27); // normal power mode, all axes enabled, 50 Hz
-  compass.writeAccReg(LSM303_CTRL_REG4_A, 0x30); // 8 g full scale
+  if (compass.getDeviceType() == LSM303DLHC_DEVICE)
+    compass.writeAccReg(LSM303_CTRL_REG4_A, 0x20); // 8 g full scale: FS = 10 on DLHC
+  else 
+    compass.writeAccReg(LSM303_CTRL_REG4_A, 0x30); // 8 g full scale: FS = 11 on DLH, DLM
 }
 
 // Reads x,y and z accelerometer registers
@@ -78,7 +83,6 @@ void Read_Accel()
 
 void Compass_Init()
 {
-  compass.init();
   compass.writeMagReg(LSM303_MR_REG_M, 0x00); // continuous conversion mode
   // 15 Hz default
 }

@@ -28,25 +28,29 @@ with MinIMU-9-Arduino-AHRS. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-/**************************************************/
-//Multiply two 3x3 matrixs. This function developed by Jordi can be easily adapted to multiple n*n matrix's. (Pero me da flojera!). 
-void Matrix_Multiply(float a[3][3], float b[3][3],float mat[3][3])
+void Compass_Heading()
 {
-  float op[3]; 
-  for(int x=0; x<3; x++)
-  {
-    for(int y=0; y<3; y++)
-    {
-      for(int w=0; w<3; w++)
-      {
-       op[w]=a[x][w]*b[w][y];
-      } 
-      mat[x][y]=0;
-      mat[x][y]=op[0]+op[1]+op[2];
-      
-      float test=mat[x][y];
-    }
-  }
+  float MAG_X;
+  float MAG_Y;
+  float cos_roll;
+  float sin_roll;
+  float cos_pitch;
+  float sin_pitch;
+  
+  cos_roll = cos(roll);
+  sin_roll = sin(roll);
+  cos_pitch = cos(pitch);
+  sin_pitch = sin(pitch);
+  
+  // adjust for LSM303 compass axis offsets/sensitivity differences by scaling to +/-0.5 range
+  c_magnetom_x = (float)(magnetom_x - SENSOR_SIGN[6]*M_X_MIN) / (M_X_MAX - M_X_MIN) - SENSOR_SIGN[6]*0.5;
+  c_magnetom_y = (float)(magnetom_y - SENSOR_SIGN[7]*M_Y_MIN) / (M_Y_MAX - M_Y_MIN) - SENSOR_SIGN[7]*0.5;
+  c_magnetom_z = (float)(magnetom_z - SENSOR_SIGN[8]*M_Z_MIN) / (M_Z_MAX - M_Z_MIN) - SENSOR_SIGN[8]*0.5;
+  
+  // Tilt compensated Magnetic filed X:
+  MAG_X = c_magnetom_x*cos_pitch+c_magnetom_y*sin_roll*sin_pitch+c_magnetom_z*cos_roll*sin_pitch;
+  // Tilt compensated Magnetic filed Y:
+  MAG_Y = c_magnetom_y*cos_roll-c_magnetom_z*sin_roll;
+  // Magnetic Heading
+  MAG_Heading = atan2(-MAG_Y,MAG_X);
 }
-
-
