@@ -28,10 +28,10 @@ with MinIMU-9-Arduino-AHRS. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-#include <L3G4200D.h>
+#include <L3G.h>
 #include <LSM303.h>
 
-L3G4200D gyro;
+L3G gyro;
 LSM303 compass;
 
 void I2C_Init()
@@ -42,8 +42,8 @@ void I2C_Init()
 void Gyro_Init()
 {
   gyro.init();
-  gyro.writeReg(L3G4200D_CTRL_REG1, 0x0F); // normal power mode, all axes enabled, 100 Hz
-  gyro.writeReg(L3G4200D_CTRL_REG4, 0x20); // 2000 dps full scale
+  gyro.writeReg(L3G_CTRL_REG1, 0x0F); // normal power mode, all axes enabled, 100 Hz
+  gyro.writeReg(L3G_CTRL_REG4, 0x20); // 2000 dps full scale
 }
 
 void Read_Gyro()
