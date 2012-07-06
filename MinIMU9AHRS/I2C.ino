@@ -61,11 +61,17 @@ void Read_Gyro()
 void Accel_Init()
 {
   compass.init();
-  compass.writeAccReg(LSM303_CTRL_REG1_A, 0x27); // normal power mode, all axes enabled, 50 Hz
   if (compass.getDeviceType() == LSM303DLHC_DEVICE)
+  {
+    compass.writeAccReg(LSM303_CTRL_REG1_A, 0x47); // normal power mode, all axes enabled, 50 Hz
+    compass.writeAccReg(LSM303_CTRL_REG4_A, 0x08); // high resolution output mode
     compass.writeAccReg(LSM303_CTRL_REG4_A, 0x20); // 8 g full scale: FS = 10 on DLHC
+  }
   else 
+  {
+    compass.writeAccReg(LSM303_CTRL_REG1_A, 0x27); // normal power mode, all axes enabled, 50 Hz
     compass.writeAccReg(LSM303_CTRL_REG4_A, 0x30); // 8 g full scale: FS = 11 on DLH, DLM
+  }
 }
 
 // Reads x,y and z accelerometer registers
