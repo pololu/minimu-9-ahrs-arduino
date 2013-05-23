@@ -26,10 +26,10 @@ The Arduino program uses Pololu's "L3G":https://github.com/pololu/L3G and "LSM30
 
 The Python test program also has several dependencies you must install before you can run it:
 
-* "Python 2.6 or 2.7":http://www.python.org/download/ (download the 32-bit version)
-* "pywin32":http://sourceforge.net/projects/pywin32/files/pywin32/ (again, download the 32-bit version)
-* "pyserial":http://sourceforge.net/projects/pyserial/files/pyserial/
-* "VPython":http://vpython.org/contents/download_windows.html
+* "Python 2.7":http://www.python.org/download/ (download the 32-bit version)
+* "pywin32":http://sourceforge.net/projects/pywin32/files/pywin32/ (direct link: "pywin32-218.win32-py2.7.exe":http://sourceforge.net/projects/pywin32/files/pywin32/Build%20218/pywin32-218.win32-py2.7.exe/download)
+* "pyserial":http://sourceforge.net/projects/pyserial/files/pyserial/ (direct link: "pyserial-2.5.win32.exe":http://sourceforge.net/projects/pyserial/files/pyserial/2.5/pyserial-2.5.win32.exe/download)
+* "VPython 5":http://vpython.org/contents/download_windows.html (direct link: "VPython-Win-Py2.7-5.74.exe":http://vpython.org/contents/download/VPython-Win-Py2.7-5.74.exe)
 
 After you have set up the prerequisites, download the archive from "GitHub":https://github.com/pololu/MinIMU-9-Arduino-AHRS and decompress it.
 
