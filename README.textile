@@ -9,7 +9,7 @@ h2. Summary
 MinIMU-9-Arduino-AHRS provides a program (sketch) for the "Arduino":http://pololu.com/catalog/product/2191 that interfaces with the Pololu MinIMU-9 inertial measurement units:
 
 * "MinIMU-9 v2 &#40;L3GD20 and LSM303DLHC carrier)":http://www.pololu.com/catalog/product/1268
-* "MinIMU-9 &#40;L3G4200D and LSM303DLM carrier)":http://www.pololu.com/catalog/product/1265
+* "MinIMU-9 &#40;L3G4200D and LSM303DLM carrier)":http://www.pololu.com/catalog/product/1265 (discontinued)
 * "MinIMU-9 &#40;L3G4200D and LSM303DLH carrier)":http://www.pololu.com/catalog/product/1264 (discontinued)
 
 It also works with the "AltIMU-10 &#40;L3GD20, LSM303DLHC, and LPS331AP carrier)":http://www.pololu.com/catalog/product/1269, although the output from the LPS331AP barometer is not used.
