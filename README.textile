@@ -6,7 +6,7 @@ Release Date: 2013-03-15
 
 h2. Summary
 
-MinIMU-9-Arduino-AHRS provides a program (sketch) for the "Arduino":http://pololu.com/catalog/product/2191 that interfaces with the Pololu MinIMU-9 inertial measurement units:
+This is a program (sketch) for the "Arduino":http://pololu.com/catalog/product/2191 that interfaces with the Pololu MinIMU-9 inertial measurement units:
 
 * "MinIMU-9 v2 &#40;L3GD20 and LSM303DLHC carrier)":http://www.pololu.com/catalog/product/1268
 * "MinIMU-9 &#40;L3G4200D and LSM303DLM carrier)":http://www.pololu.com/catalog/product/1265 (discontinued)
