@@ -6,13 +6,15 @@ Release Date: 2013-03-15
 
 h2. Summary
 
-MinIMU-9-Arduino-AHRS provides a program (sketch) for the "Arduino":http://pololu.com/catalog/product/2191 that interfaces with the Pololu MinIMU-9 inertial measurement units:
+This is a program (sketch) for the "Arduino":http://pololu.com/catalog/product/2191 that interfaces with the Pololu MinIMU-9 inertial measurement units:
 
-* "MinIMU-9 v2 L3GD20 and LSM303DLHC carrier":http://www.pololu.com/catalog/product/1268
-* "MinIMU-9 L3G4200D and LSM303DLM carrier":http://www.pololu.com/catalog/product/1265
-* "MinIMU-9 L3G4200D and LSM303DLH carrier":http://www.pololu.com/catalog/product/1264 (discontinued)
+* "MinIMU-9 v2 &#40;L3GD20 and LSM303DLHC carrier)":http://www.pololu.com/catalog/product/1268
+* "MinIMU-9 &#40;L3G4200D and LSM303DLM carrier)":http://www.pololu.com/catalog/product/1265 (discontinued)
+* "MinIMU-9 &#40;L3G4200D and LSM303DLH carrier)":http://www.pololu.com/catalog/product/1264 (discontinued)
 
- It processes the raw rotation, acceleration, and magnetic data from the MinIMU-9 to derive an estimate of the board's absolute orientation, which it outputs through the Arduino's serial interface, turning the MinIMU-9 and Arduino into an attitude and heading reference system (AHRS).
+It also works with the "AltIMU-10 &#40;L3GD20, LSM303DLHC, and LPS331AP carrier)":http://www.pololu.com/catalog/product/1269, although the output from the LPS331AP barometer is not used.
+
+This Arduino program processes the raw rotation, acceleration, and magnetic data from the MinIMU-9 to derive an estimate of the board's absolute orientation, which it outputs through the Arduino's serial interface, turning the MinIMU-9 and Arduino into an attitude and heading reference system (AHRS).
 
 A Python test program is also included. It communicates with the Arduino serially and displays a 3D representation of the MinIMU-9 board, allowing you to visualize the output of the AHRS in real time.
 
@@ -26,10 +28,10 @@ The Arduino program uses Pololu's "L3G":https://github.com/pololu/L3G and "LSM30
 
 The Python test program also has several dependencies you must install before you can run it:
 
-* "Python 2.6 or 2.7":http://www.python.org/download/ (download the 32-bit version)
-* "pywin32":http://sourceforge.net/projects/pywin32/files/pywin32/ (again, download the 32-bit version)
-* "pyserial":http://sourceforge.net/projects/pyserial/files/pyserial/
-* "VPython":http://vpython.org/contents/download_windows.html
+* "Python 2.7":http://www.python.org/download/ (download the 32-bit version)
+* "pywin32":http://sourceforge.net/projects/pywin32/files/pywin32/ (direct link: "pywin32-218.win32-py2.7.exe":http://sourceforge.net/projects/pywin32/files/pywin32/Build%20218/pywin32-218.win32-py2.7.exe/download)
+* "pyserial":http://sourceforge.net/projects/pyserial/files/pyserial/ (direct link: "pyserial-2.5.win32.exe":http://sourceforge.net/projects/pyserial/files/pyserial/2.5/pyserial-2.5.win32.exe/download)
+* "VPython 5":http://vpython.org/contents/download_windows.html (direct link: "VPython-Win-Py2.7-5.74.exe":http://vpython.org/contents/download/VPython-Win-Py2.7-5.74.exe)
 
 After you have set up the prerequisites, download the archive from "GitHub":https://github.com/pololu/MinIMU-9-Arduino-AHRS and decompress it.
 
@@ -49,6 +51,8 @@ pre. Arduino Mega                MinIMU-9
         Digital Pin 21  ->  SCL
         Digital Pin 20  ->  SDA
 
+Unfortunately, this sketch does not function properly on the Arduino Due, so we do not recommend running this sketch on an Arduino Due.
+        
 h3. Using the AHRS
 
 From the Arduino environment, open MinIMU9AHRS.ino, which can be found in the MinIMU9AHRS folder.
