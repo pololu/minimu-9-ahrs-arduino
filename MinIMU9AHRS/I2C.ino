@@ -42,8 +42,8 @@ void I2C_Init()
 void Gyro_Init()
 {
   gyro.init();
-  gyro.writeReg(L3G_CTRL_REG1, 0x0F); // normal power mode, all axes enabled, 100 Hz
   gyro.writeReg(L3G_CTRL_REG4, 0x20); // 2000 dps full scale
+  gyro.writeReg(L3G_CTRL_REG1, 0x0F); // normal power mode, all axes enabled, 100 Hz
 }
 
 void Read_Gyro()
@@ -61,15 +61,17 @@ void Read_Gyro()
 void Accel_Init()
 {
   compass.init();
-  if (compass.getDeviceType() == LSM303DLHC_DEVICE)
+  compass.enableDefault();
+  switch (compass.getDeviceType())
   {
-    compass.writeAccReg(LSM303_CTRL_REG1_A, 0x47); // normal power mode, all axes enabled, 50 Hz
-    compass.writeAccReg(LSM303_CTRL_REG4_A, 0x28); // 8 g full scale: FS = 10 on DLHC; high resolution output mode
-  }
-  else 
-  {
-    compass.writeAccReg(LSM303_CTRL_REG1_A, 0x27); // normal power mode, all axes enabled, 50 Hz
-    compass.writeAccReg(LSM303_CTRL_REG4_A, 0x30); // 8 g full scale: FS = 11 on DLH, DLM
+    case LSM303::device_D:
+      compass.writeReg(LSM303::CTRL2, 0x18); // 8 g full scale: AFS = 011
+      break;
+    case LSM303::device_DLHC:
+      compass.writeReg(LSM303::CTRL_REG4_A, 0x28); // 8 g full scale: FS = 10; high resolution output mode
+      break;
+    default: // DLM, DLH
+      compass.writeReg(LSM303::CTRL_REG4_A, 0x30); // 8 g full scale: FS = 11
   }
 }
 
@@ -78,9 +80,9 @@ void Read_Accel()
 {
   compass.readAcc();
   
-  AN[3] = compass.a.x;
-  AN[4] = compass.a.y;
-  AN[5] = compass.a.z;
+  AN[3] = compass.a.x >> 4; // shift left 4 bits to use 12-bit representation (1 g = 256)
+  AN[4] = compass.a.y >> 4;
+  AN[5] = compass.a.z >> 4;
   accel_x = SENSOR_SIGN[3] * (AN[3] - AN_OFFSET[3]);
   accel_y = SENSOR_SIGN[4] * (AN[4] - AN_OFFSET[4]);
   accel_z = SENSOR_SIGN[5] * (AN[5] - AN_OFFSET[5]);
@@ -88,8 +90,7 @@ void Read_Accel()
 
 void Compass_Init()
 {
-  compass.writeMagReg(LSM303_MR_REG_M, 0x00); // continuous conversion mode
-  // 15 Hz default
+  // doesn't need to do anything because Accel_Init() should have already called compass.enableDefault()
 }
 
 void Read_Compass()

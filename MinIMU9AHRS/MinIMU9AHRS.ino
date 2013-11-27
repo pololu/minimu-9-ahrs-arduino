@@ -50,7 +50,7 @@ int SENSOR_SIGN[9] = {1,1,1,-1,-1,-1,1,1,1}; //Correct directions x,y,z - gyro, 
 #include <Wire.h>
 
 // LSM303 accelerometer: 8 g sensitivity
-// 3.8 mg/digit; 1 g = 256
+// 3.9 mg/digit; 1 g = 256
 #define GRAVITY 256  //this equivalent to 1G in the raw data coming from the accelerometer 
 
 #define ToRad(x) ((x)*0.01745329252)  // *pi/180
