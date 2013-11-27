@@ -1,7 +1,7 @@
 h1. Pololu MinIMU-9 + Arduino AHRS (Attitude and Heading Reference System)
 
-Version: 1.2.1
-Release Date: 2013-03-15
+Version: 1.2.2
+Release Date: 2013-11-27
 "www.pololu.com":http://www.pololu.com/
 
 h2. Summary
@@ -39,17 +39,32 @@ h3. Hardware
 
 Make the following connections with wires between the Arduino and the MinIMU-9:
 
-pre. Arduino Uno/Duemilanove    MinIMU-9
-                    5V  ->  VIN
-                   GND  ->  GND
-          Analog Pin 5  ->  SCL
-          Analog Pin 4  ->  SDA
+h4. Arduino Uno R3, Leonardo, Mega 2560
 
-pre. Arduino Mega                MinIMU-9
-                    5V  ->  VIN
-                   GND  ->  GND
-        Digital Pin 21  ->  SCL
-        Digital Pin 20  ->  SDA
+pre. Arduino      MinIMU-9
+---------------------
+     5V  ->  VIN
+    GND  ->  GND
+    SDA  ->  SDA
+    SCL  ->  SCL
+
+h4. Arduino Micro
+
+pre. Arduino      MinIMU-9
+---------------------
+     5V  ->  VIN
+    GND  ->  GND
+      2  ->  SDA
+      3  ->  SCL
+
+h4. Arduino Uno (up to R2), Duemilanove, etc.
+
+pre. Arduino      MinIMU-9
+---------------------
+     5V  ->  VIN
+    GND  ->  GND
+     A4  ->  SDA
+     A5  ->  SCL
 
 Unfortunately, this sketch does not function properly on the Arduino Due, so we do not recommend running this sketch on an Arduino Due.
         
@@ -79,6 +94,7 @@ To visualize the output of the AHRS, you can run the Python test program (MinIMU
 
 h2. Version History
 
+* 1.2.2 (2013-11-27): Updated to work with LSM303 library version 2.0.0.
 * 1.2.1 (2013-03-15): Fixed issue with properly enabling high-resolution mode on accelerometer.
 * 1.2.0 (2012-07-06): Added support for MinIMU-9 v2 (L3GD20 and LSM303DLHC); L3G4200D library dependency changed to L3G.
 * 1.1.0 (2011-11-15): Added support for LSM303DLM; LSM303DLH library dependency changed to LSM303.
