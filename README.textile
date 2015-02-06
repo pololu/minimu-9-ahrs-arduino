@@ -1,7 +1,7 @@
 h1. Pololu MinIMU-9 + Arduino AHRS (Attitude and Heading Reference System)
 
-Version: 1.2.2
-Release Date: 2013-11-27
+Version: 1.2.3
+Release Date: 2015-02-05
 "www.pololu.com":http://www.pololu.com/
 
 h2. Summary
@@ -9,7 +9,7 @@ h2. Summary
 This is a program (sketch) for the "Arduino":http://pololu.com/catalog/product/2191 that interfaces with the Pololu MinIMU-9 inertial measurement units:
 
 * "MinIMU-9 v3 <notextile>(L3GD20H and LSM303D carrier)</notextile>":http://www.pololu.com/product/2468
-* "MinIMU-9 v2 <notextile>(L3GD20 and LSM303DLHC carrier)</notextile>":http://www.pololu.com/catalog/product/1268
+* "MinIMU-9 v2 <notextile>(L3GD20 and LSM303DLHC carrier)</notextile>":http://www.pololu.com/catalog/product/1268 (discontinued)
 * "MinIMU-9 <notextile>(L3G4200D and LSM303DLM carrier)</notextile>":http://www.pololu.com/catalog/product/1265 (discontinued)
 * "MinIMU-9 <notextile>(L3G4200D and LSM303DLH carrier)</notextile>":http://www.pololu.com/catalog/product/1264 (discontinued)
 
@@ -17,7 +17,7 @@ It also works with the Pololu AltIMU-10 boards, although the output from the bar
 
 * "AltIMU-10 v4 <notextile>(L3GD20H, LSM303D, and LPS25H carrier)</notextile>":http://www.pololu.com/catalog/product/2470
 * "AltIMU-10 v3 <notextile>(L3GD20H, LSM303D, and LPS331AP carrier)</notextile>":http://www.pololu.com/catalog/product/2469
-* "AltIMU-10 <notextile>(L3GD20, LSM303DLHC, and LPS331AP carrier)</notextile>":http://www.pololu.com/catalog/product/1269
+* "AltIMU-10 <notextile>(L3GD20, LSM303DLHC, and LPS331AP carrier)</notextile>":http://www.pololu.com/catalog/product/1269 (discontinued)
 
 This Arduino program processes the raw rotation, acceleration, and magnetic data from the MinIMU-9 to derive an estimate of the board's absolute orientation, which it outputs through the Arduino's serial interface, turning the MinIMU-9 and Arduino into an attitude and heading reference system (AHRS).
 
@@ -99,6 +99,7 @@ To visualize the output of the AHRS, you can run the Python test program (MinIMU
 
 h2. Version History
 
+* 1.2.3 (2015-02-05): Updated to work with L3G library version 2.0.0.
 * 1.2.2 (2013-11-27): Updated to work with LSM303 library version 2.0.0.
 * 1.2.1 (2013-03-15): Fixed issue with properly enabling high-resolution mode on accelerometer.
 * 1.2.0 (2012-07-06): Added support for MinIMU-9 v2 (L3GD20 and LSM303DLHC); L3G4200D library dependency changed to L3G.
