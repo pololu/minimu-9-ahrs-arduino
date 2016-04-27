@@ -1,13 +1,14 @@
 h1. Pololu MinIMU-9 + Arduino AHRS (Attitude and Heading Reference System)
 
-Version: 1.2.3
-Release Date: 2015-02-05
+Version: 1.3.0
+Release Date: 2016-04-27
 "www.pololu.com":http://www.pololu.com/
 
 h2. Summary
 
 This is a program (sketch) for the "Arduino":http://pololu.com/catalog/product/2191 that interfaces with the Pololu MinIMU-9 inertial measurement units:
 
+* "MinIMU-9 v5 <notextile>(LSM6DS33 and LIS3MDL carrier)</notextile>":http://www.pololu.com/product/2738
 * "MinIMU-9 v3 <notextile>(L3GD20H and LSM303D carrier)</notextile>":http://www.pololu.com/product/2468
 * "MinIMU-9 v2 <notextile>(L3GD20 and LSM303DLHC carrier)</notextile>":http://www.pololu.com/catalog/product/1268 (discontinued)
 * "MinIMU-9 <notextile>(L3G4200D and LSM303DLM carrier)</notextile>":http://www.pololu.com/catalog/product/1265 (discontinued)
@@ -15,6 +16,7 @@ This is a program (sketch) for the "Arduino":http://pololu.com/catalog/product/2
 
 It also works with the Pololu AltIMU-10 boards, although the output from the barometer is not used:
 
+* "AltIMU-10 v5 <notextile>(LSM6DS33, LIS3MDL, and LPS25H carrier)</notextile>":http://www.pololu.com/product/2739
 * "AltIMU-10 v4 <notextile>(L3GD20H, LSM303D, and LPS25H carrier)</notextile>":http://www.pololu.com/catalog/product/2470
 * "AltIMU-10 v3 <notextile>(L3GD20H, LSM303D, and LPS331AP carrier)</notextile>":http://www.pololu.com/catalog/product/2469
 * "AltIMU-10 <notextile>(L3GD20, LSM303DLHC, and LPS331AP carrier)</notextile>":http://www.pololu.com/catalog/product/1269 (discontinued)
@@ -29,7 +31,10 @@ h2. Getting Started
  
 h3. Software
 
-The Arduino program uses Pololu's "L3G":https://github.com/pololu/L3G and "LSM303":https://github.com/pololu/LSM303 Arduino libraries, which can also be downloaded from GitHub. Follow the instructions on their respective pages to install the libraries.
+The Arduino program uses Pololu's Arduino libraries for the sensors on the IMU board, which can also be downloaded from GitHub. Follow the instructions on their respective pages to install the libraries.
+
+* *v5* IMUs: "LSM6":https://github.com/pololu/LSM6 and "LIS3MDL":https://github.com/pololu/LIS3MDL libraries
+* *v4 and earlier* IMUs: "L3G":https://github.com/pololu/L3G and "LSM303":https://github.com/pololu/LSM303 libraries
 
 The Python test program also has several dependencies you must install before you can run it:
 
@@ -44,42 +49,37 @@ h3. Hardware
 
 Make the following connections with wires between the Arduino and the MinIMU-9:
 
-h4. Arduino Uno R3, Leonardo, Mega 2560
+h4. 5V Arduino boards
 
-pre. Arduino      MinIMU-9
----------------------
-     5V  ->  VIN
-    GND  ->  GND
-    SDA  ->  SDA
-    SCL  ->  SCL
+(including Arduino Uno, Leonardo, Mega; Pololu A-Star 32U4)
 
-h4. Arduino Micro
+pre. Arduino   IMU
+-------   ---
+     5V - VIN
+    GND - GND
+    SDA - SDA
+    SCL - SCL
 
-pre. Arduino      MinIMU-9
----------------------
-     5V  ->  VIN
-    GND  ->  GND
-      2  ->  SDA
-      3  ->  SCL
+h4. 3.3V Arduino boards
 
-h4. Arduino Uno (up to R2), Duemilanove, etc.
+(including Arduino Due)
 
-pre. Arduino      MinIMU-9
----------------------
-     5V  ->  VIN
-    GND  ->  GND
-     A4  ->  SDA
-     A5  ->  SCL
-
-Unfortunately, this sketch does not function properly on the Arduino Due, so we do not recommend running this sketch on an Arduino Due.
-        
+pre. Arduino   IMU
+-------   ---
+    3V3 - VIN
+    GND - GND
+    SDA - SDA
+    SCL - SCL
+   
 h3. Using the AHRS
 
 From the Arduino environment, open MinIMU9AHRS.ino, which can be found in the MinIMU9AHRS folder.
 
+The Arduino program is set up for a *v4 or earlier* IMU by default. If you are using a MinIMU or AltIMU *v5*, uncomment the line that says @//#define IMU_V5@ at the beginning of MinIMU9AHRS.ino.
+
 By default, the Arduino code treats the positive X axis of the MinIMU-9 as forward and the negative Z axis as up (so that the components are on the bottom of the board and the silkscreen is on top). If you want the positive Z axis to be up instead (so that the components are on top), find the definition of @SENSOR_SIGN[9]@ at the beginning of MinIMU9AHRS.ino and uncomment the appropriate line (after commenting the original).
 
-To ensure that the heading derived from the compass is accurate, you should change the @M_X_MIN@ through @M_Z_MAX@ calibration constants to appropriate values. You can use the Calibrate example from the "LSM303 library":https://github.com/pololu/LSM303 to find the right values for your board.
+To ensure that the heading derived from the compass is accurate, you should change the @M_X_MIN@ through @M_Z_MAX@ calibration constants to appropriate values. You can use the Calibrate example from the "LIS3MDL library":https://github.com/pololu/LIS3MDL (v5) or "LSM303 library":https://github.com/pololu/LSM303 (v4 or earlier) to find the right values for your board.
 
 In the Tools menu, select the appropriate board and serial port. Click the "Upload" button to compile the sketch and load it onto your Arduino.
 
@@ -99,6 +99,7 @@ To visualize the output of the AHRS, you can run the Python test program (MinIMU
 
 h2. Version History
 
+* 1.3.0 (2016-04-27): Added support for MinIMU-9 v5 and AltIMU-10 v5. Added a check to help work around nan (not a number) problems caused by USB serial stalling the main loop.
 * 1.2.3 (2015-02-05): Updated to work with L3G library version 2.0.0.
 * 1.2.2 (2013-11-27): Updated to work with LSM303 library version 2.0.0.
 * 1.2.1 (2013-03-15): Fixed issue with properly enabling high-resolution mode on accelerometer.
