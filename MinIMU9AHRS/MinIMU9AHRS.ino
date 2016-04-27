@@ -3,7 +3,7 @@
 MinIMU-9-Arduino-AHRS
 Pololu MinIMU-9 + Arduino AHRS (Attitude and Heading Reference System)
 
-Copyright (c) 2011 Pololu Corporation.
+Copyright (c) 2011-2016 Pololu Corporation.
 http://www.pololu.com/
 
 MinIMU-9-Arduino-AHRS is based on sf9domahrs by Doug Weibel and Jose Julio:
@@ -28,6 +28,9 @@ with MinIMU-9-Arduino-AHRS. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
+// Uncomment the following line to use a MinIMU-9 v5 or AltIMU-10 v5. Leave commented for older IMUs (up through v4).
+//#define IMU_V5
+
 // Uncomment the below line to use this axis definition:
    // X axis pointing forward
    // Y axis pointing to the right
@@ -48,9 +51,6 @@ int SENSOR_SIGN[9] = {1,1,1,-1,-1,-1,1,1,1}; //Correct directions x,y,z - gyro, 
 // tested with Arduino Uno with ATmega328 and Arduino Duemilanove with ATMega168
 
 #include <Wire.h>
-
-// Uncomment the following line to use a MinIMU-9 v5 or AltIMU-10 v5. Leave commented for older IMUs (up through v4).
-//#define IMU_V5
 
 // accelerometer: 8 g sensitivity
 // 3.9 mg/digit; 1 g = 256
