@@ -79,7 +79,7 @@ The Arduino program is set up for a *v4 or earlier* IMU by default. If you are u
 
 By default, the Arduino code treats the positive X axis of the MinIMU-9 as forward and the negative Z axis as up (so that the components are on the bottom of the board and the silkscreen is on top). If you want the positive Z axis to be up instead (so that the components are on top), find the definition of @SENSOR_SIGN[9]@ at the beginning of MinIMU9AHRS.ino and uncomment the appropriate line (after commenting the original).
 
-To ensure that the heading derived from the compass is accurate, you should change the @M_X_MIN@ through @M_Z_MAX@ calibration constants to appropriate values. You can use the Calibrate example from the "LIS3MDL library":https://github.com/pololu/LIS3MDL (v5) or "LSM303 library":https://github.com/pololu/LSM303 (v4 or earlier) to find the right values for your board.
+To ensure that the heading derived from the compass is accurate, you should change the @M_X_MIN@ through @M_Z_MAX@ calibration constants to appropriate values. You can use the Calibrate example from the "LIS3MDL library":https://github.com/pololu/LIS3MDL-arduino (v5) or "LSM303 library":https://github.com/pololu/LSM303 (v4 or earlier) to find the right values for your board.
 
 In the Tools menu, select the appropriate board and serial port. Click the "Upload" button to compile the sketch and load it onto your Arduino.
 
