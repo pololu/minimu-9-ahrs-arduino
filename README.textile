@@ -33,7 +33,7 @@ h3. Software
 
 The Arduino program uses Pololu's Arduino libraries for the sensors on the IMU board, which can also be downloaded from GitHub. Follow the instructions on their respective pages to install the libraries.
 
-* *v5* IMUs: "LSM6":https://github.com/pololu/LSM6 and "LIS3MDL":https://github.com/pololu/LIS3MDL libraries
+* *v5* IMUs: "LSM6":https://github.com/pololu/LSM6-arduino and "LIS3MDL":https://github.com/pololu/LIS3MDL-arduino libraries
 * *v4 and earlier* IMUs: "L3G":https://github.com/pololu/L3G and "LSM303":https://github.com/pololu/LSM303 libraries
 
 The Python test program also has several dependencies you must install before you can run it:
