@@ -115,13 +115,13 @@ void Read_Accel()
 #ifdef IMU_V5
   gyro_acc.readAcc();
 
-  AN[3] = gyro_acc.a.x >> 4; // shift left 4 bits to use 12-bit representation (1 g = 256)
+  AN[3] = gyro_acc.a.x >> 4; // shift right 4 bits to use 12-bit representation (1 g = 256)
   AN[4] = gyro_acc.a.y >> 4;
   AN[5] = gyro_acc.a.z >> 4;
 #else
   compass.readAcc();
 
-  AN[3] = compass.a.x >> 4; // shift left 4 bits to use 12-bit representation (1 g = 256)
+  AN[3] = compass.a.x >> 4; // shift right 4 bits to use 12-bit representation (1 g = 256)
   AN[4] = compass.a.y >> 4;
   AN[5] = compass.a.z >> 4;
 #endif
